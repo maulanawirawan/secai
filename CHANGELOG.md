@@ -7,6 +7,27 @@ as the compatibility signal.
 
 ## [Unreleased]
 
+### Added — wave-4 triage batch (3 new tools, 203 -> 206)
+
+Three offline triage tools closing more gaps from the reference
+library (A-poc RedTeam/BlueTeam), built from scratch, stdlib-only,
+zero-network, fail-closed:
+
+- `defender_tamper_triage` — score Defender event/MPLog/command dumps
+  for AV tampering (RTP disabled via EventID 5001, Set-MpPreference
+  config flips, exclusions, AV process suspension, signature-store
+  deletion, tamper protection off).
+- `gpp_cpassword_triage` — detect embedded `cpassword` credentials in
+  Group Policy Preferences XML (optional AES decryption with the
+  published static key when a crypto package is available).
+- `rdp_enable_triage` — score registry/event/command dumps for RDP
+  enablement and hardening removal (fDenyTSConnections, NLA off,
+  firewall 3389, session 1149 / logon type 10, non-standard listener
+  port).
+
+- 17 new tests (zero-FP controls + fail-closed per tool): 3535 passed
+  (+31 subtests), Rust 68 tests.
+
 ### Added — wave-3 triage batch (3 new tools, 200 -> 203)
 
 Three offline triage tools closing gaps mined from the reference
