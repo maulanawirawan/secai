@@ -7,6 +7,29 @@ as the compatibility signal.
 
 ## [Unreleased]
 
+### Added — wave-5 triage batch (3 new tools, 206 -> 209)
+
+Three offline triage tools closing more gaps from the reference
+library (A-poc RedTeam/BlueTeam), built from scratch, stdlib-only,
+zero-network, fail-closed:
+
+- `lnk_triage` — parse Windows Shell Link (.lnk) binaries (MS-SHLLINK
+  from scratch) and score shortcut abuse: lolbin targets/arguments,
+  encoded PowerShell cradles, UNC icon locations (rendered icons leak
+  NetNTLM), UNC targets, and borrowed-icon disguise (the "6-pixel
+  mspaint" shortcut trick).
+- `hidden_account_triage` — detect local accounts hidden from the
+  Windows Welcome screen via `Winlogon\SpecialAccounts\UserList`
+  DWORD-0 entries (section-aware parsing for .reg exports, reg query
+  dumps and PowerShell/reg add hide commands).
+- `llmnr_pcap_scan` — detect name-resolution poisoning (Responder)
+  in offline Ethernet pcaps: LLMNR (RFC 4795) and NBT-NS (RFC 1002)
+  query/response pairing by transaction ID, flagging names answered
+  by multiple hosts and single responders claiming many names.
+
+- 25 new tests (zero-FP controls + fail-closed per tool): 3560 passed
+  (+31 subtests), Rust 68 tests.
+
 ### Added — wave-4 triage batch (3 new tools, 203 -> 206)
 
 Three offline triage tools closing more gaps from the reference
