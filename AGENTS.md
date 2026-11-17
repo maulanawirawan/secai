@@ -14,7 +14,7 @@ that cannot be proven never ships.
   every mode has its own `--help`. Start here.
 - `SKILL.md` — the agent manual: safe playbook + guardrails (also mounted
   as `.claude/skills/secai/`).
-- `skills/` — 108 standalone Python CLIs, one detection skill each
+- `skills/` — 111 standalone Python CLIs, one detection skill each
   (`--url` / `--target` ... `--out result.json`). This is what users run.
 - `core-rs/` — native Rust core (`secai validate | scan ...`).
   Build: `cargo build --release --manifest-path core-rs/Cargo.toml`
@@ -24,9 +24,11 @@ that cannot be proven never ships.
   agent-safety (`injection_guard`, `agent_shield`), audit engines
   (`audit_phases` multi-phase fail-closed, `insecure_defaults` config
   scanner), verify gate (`verify_gate` — claims need fresh evidence), leak-claim triage (`leak_triage`), parallel job dispatch (`fleet_dispatch`), skill vetting gate (`skill_vet`), CVSS v3.1 calculator (`cvss_score`), DFIR, config & intel triage (28+ tools triage: maldoc/pdf/mft/netflow/deauth/dpapi/packer/web-log/dns-log/eml/k8s/cloudtrail/IAM/sysmon/win-logon/waf/lolbin/CT-baseline/IOC-defang/SARIF-ingest/dsb. — lihat git log).
-- `tests/` — pytest suite (3728 tests + 31 subtests; 38 test POSIX skip otomatis di Windows). Run: `python -m pytest tests/ -q`
+- `tests/` — pytest suite (3744 tests + 31 subtests; 38 test POSIX skip otomatis di Windows). Run: `python -m pytest tests/ -q`
 - `docs/` — policies: exploit tier, egress, install, nightrun, legion
-  method (`docs/LEGION-METHOD.md`).
+  method (`docs/LEGION-METHOD.md`), agent playbook utk kelas kerentanan
+  aktif yang butuh penalaran LLM (`docs/HUNT-ACTIVE-CLASSES.md` —
+  file-upload/race/MFA-ATO/business-logic, contoh request + gate).
 
 ## Ground rules (non-negotiable)
 

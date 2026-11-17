@@ -7,6 +7,34 @@ as the compatibility signal.
 
 ## [Unreleased]
 
+### Added — wave-11 active-classes batch (3 skills + agent playbook, 108 -> 111 skills)
+
+The active-probing classes enter the repo in two forms — deterministic
+gated probes where possible, agent playbook where LLM judgment is the
+tool:
+
+- `xxe_probe_check` (active-probe, lab-only) — in-band XXE probe: two
+  stateless POSTs (benign XML vs DOCTYPE+entity referencing a
+  nonexistent canary path); response differential or canary echo =
+  entity-processing lead. No target file is read, no OOB callback.
+- `ldap_probe_check` (active-probe, lab-only) — LDAP filter injection
+  differential (benign value vs wildcard `*`): status/body-ratio/
+  error-signature change = lead. No data extraction.
+- `upload_surface_check` (read-only) — multipart upload surface
+  inventory (forms, file inputs, accept filters, action endpoints);
+  zero uploads performed — active upload testing stays on the
+  exploit-tier/lab path.
+- `docs/HUNT-ACTIVE-CLASSES.md` — agent playbook for the classes that
+  need LLM reasoning (file-upload progression, race-condition
+  parallel-submit pattern, MFA/ATO flows with test accounts,
+  business-logic invariants, captcha/rate measurement), with concrete
+  request examples, the evidence contract, and the --lab / tier gates.
+  Reference from AGENTS.md so mounted agents discover it.
+
+- 16 new tests (zero-FP + fail-closed + lab-gate refusal): 3744 passed
+  (+31 subtests), Rust 68 tests. Registry (2 lab_only entries) +
+  verdict-audit curation added.
+
 ### Added — wave-10 deep-mine batch (1 tool + 1 skill, 225 -> 226 tools / 107 -> 108 skills)
 
 Final mineable items from the deep pass over the reference hunt

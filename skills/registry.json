@@ -1700,6 +1700,55 @@
    "needs": "target",
    "desc": "sharepoint-posture — deteksi farm SharePoint on-prem (maks 3 GET /_layouts/15/start.aspx,/_api/web,/): token 'sharepoint'/_layouts/_vti_bin/X-SharePointHealthScore = lead + fakta versi utk cve-matcher; frasa generik 'document management' TIDAK dihitung",
    "requires_evidence": false
+  },
+  {
+   "name": "xxe-probe-check",
+   "cmd": [
+    "python",
+    "skills/xxe_probe_check.py",
+    "--url",
+    "@TARGET@",
+    "--out",
+    "@OUT@",
+    "--lab"
+   ],
+   "safety_class": "active-probe",
+   "needs": "target",
+   "desc": "xxe-probe-check — in-band probe XXE (2 POST: benign vs entity file:///nonexistent-canary) — beda respons/canary echoed = lead entitas diproses; TIDAK baca file target, TIDAK OOB; ACTIVE-PROBE lab-only",
+   "requires_evidence": false,
+   "lab_only": true
+  },
+  {
+   "name": "ldap-probe-check",
+   "cmd": [
+    "python",
+    "skills/ldap_probe_check.py",
+    "--url",
+    "@TARGET@",
+    "--out",
+    "@OUT@",
+    "--lab"
+   ],
+   "safety_class": "active-probe",
+   "needs": "target",
+   "desc": "ldap-probe-check — in-band probe LDAP filter injection (2 GET: benign vs wildcard *) — status/body-ratio/error diff = lead; tanpa ekstraksi data; ACTIVE-PROBE lab-only",
+   "requires_evidence": false,
+   "lab_only": true
+  },
+  {
+   "name": "upload-surface-check",
+   "cmd": [
+    "python",
+    "skills/upload_surface_check.py",
+    "--url",
+    "@TARGET@",
+    "--out",
+    "@OUT@"
+   ],
+   "safety_class": "read-only",
+   "needs": "target",
+   "desc": "upload-surface-check — inventori read-only permukaan upload (form multipart + input file + accept filter) — NOL upload; pengujian upload = jalur exploit-tier/lab",
+   "requires_evidence": false
   }
  ]
 }
