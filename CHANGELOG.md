@@ -7,6 +7,35 @@ as the compatibility signal.
 
 ## [Unreleased]
 
+### Added — wave-6 triage batch (3 new tools, 209 -> 212)
+
+Three offline triage tools closing more gaps from the reference
+library (A-poc RedTeam/BlueTeam), built from scratch, stdlib-only,
+zero-network, fail-closed:
+
+- `script_assoc_audit` — audit Windows script file-association
+  artifacts (.reg exports, reg query dumps, assoc/ftype commands) for
+  handler hijacking on script extensions (.js/.jse/.vbs/.vbe/.wsf/
+  .wsh/.hta/.bat/.cmd/.scr/.chm/.ps1): handler override vs the stock
+  allowlist, unexpected binaries, handlers outside \Windows\, LOLBIN
+  proxies (rundll32/regsvr32/...), and association-mutating commands.
+  Escape-aware .reg value parsing (\\" and \\\\), section-aware.
+- `link_spoof_triage` — detect link spoofing in HTML/JS artifacts: an
+  anchor click handler calling preventDefault() then navigating to an
+  absolute URL different from the displayed href (the PreventDefault
+  technique), plus inline onclick navigation and window.status bar
+  spoofing. Conjunction-gated so SPA routers and modal handlers with
+  relative navigation stay clean (zero-FP).
+- `scom_artifact_triage` — detect System Center Operations Manager
+  credential-exposure artifacts (the SCOMDecrypt target surface):
+  SecureData/SecureString blobs, plaintext <Password> fields (contents
+  never echoed), RunAs registry keys, decryption-tool usage, and
+  RunAs MP elements. Detection only — blob decryption needs host
+  machine keys and is out of scope (honest note).
+
+- 23 new tests (zero-FP controls + fail-closed per tool): 3583 passed
+  (+31 subtests), Rust 68 tests.
+
 ### Added — wave-5 triage batch (3 new tools, 206 -> 209)
 
 Three offline triage tools closing more gaps from the reference
