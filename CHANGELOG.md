@@ -7,6 +7,51 @@ as the compatibility signal.
 
 ## [Unreleased]
 
+### Added — wave-7 triage batch (8 new tools, 212 -> 220)
+
+Eight offline triage tools closing more gaps from the reference
+libraries, built from scratch, stdlib-only, zero-network, fail-closed:
+
+- `whoami_priv_triage` — parse `whoami /priv` (+ `/groups`) table and
+  CSV output: dangerous token privileges (SeImpersonate/SeDebug/
+  SeBackup/... ) with Enabled vs Disabled state, and local-admin
+  group context. Standard-user output stays clean (zero-FP).
+- `systeminfo_triage` — parse `systeminfo` output: Domain Controller
+  host class, VM platform markers, missing/thin hotfix counts, and
+  boot-time uptime vs explicit thresholds (--now/--min-hotfix/
+  --max-uptime-days keep runs deterministic).
+- `usb_device_triage` — inventory USB storage history from USBSTOR/
+  Enum\USB registry dumps and setupapi.dev.log install blocks:
+  device serials/friendly names, recent-install window, serial churn.
+- `translate_proxy_triage` — detect translation-proxy phishing URLs
+  (target-host.encode.translate.goog with _x_tr_* params, and the
+  legacy translate.google.com/translate?...&u= redirect wrapper);
+  plain translate.google.com URLs stay clean (zero-FP).
+- `cme_log_triage` — triage CrackMapExec/netexec/nxc console output:
+  successful auths, Pwn3d! admin markers, credential-dump indicators,
+  SMB-signing-disabled findings, and lateral host spread. Failure-only
+  runs stay clean (zero-FP).
+- `pingcastle_report_triage` — schema-light parse of AD health reports
+  (XML/HTML/JSON): health-score thresholds, risk-rule inventory, and
+  risk-point totals. Healthy reports stay clean (zero-FP).
+- `sigma_rule_triage` — lint Sigma YAML rules (multi-document, line-
+  structure lint, no YAML dependency): missing detection/condition/
+  level/logsource, broad "1 of them" conditions, bare-wildcard field
+  values, deprecated status, placeholder titles.
+- `nessus_report_triage` — aggregate Nessus v2 (.nessus XML) scans via
+  xml.etree: per-severity totals, critical presence, high-per-host
+  density, uncredentialed-scan caveat, host-count context.
+
+### Improved — lnk_triage
+
+- Parse the TrackerDataBlock (signature 0xA0000003): MachineID NetBIOS
+  name + droid GUIDs of the creating machine are surfaced as IR
+  evidence fields (`tracker_machine`, `tracker_droid`). Enrichment
+  only — normal shortcuts keep a zero score (not an abuse signal).
+
+- 49 new tests (zero-FP controls + fail-closed per tool): 3632 passed
+  (+31 subtests), Rust 68 tests.
+
 ### Added — wave-6 triage batch (3 new tools, 209 -> 212)
 
 Three offline triage tools closing more gaps from the reference

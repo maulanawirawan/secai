@@ -1,10 +1,14 @@
-r"""[SAFETY: read-only] lnk_triage — wave-5 triase OFFLINE file .lnk
+r"""[SAFETY: read-only] lnk_triage — wave-5+7 triase OFFLINE file .lnk
 (Windows Shell Link) terhadap pola penyalahgunaan shortcut:
 target lolbin/scripting, argumen interpreter/encoded cradle, icon UNC
 (ikon dirender -> kredensial SMB bocor ke host jauh), dan target di
-share jaringan (referensi teknik "CMD shortcut with 6 pixels via
-mspaint" dari pustaka referensi; format di-parse dari nol per
-MS-SHLLINK, stdlib murni).
+share jaringan (pola penyamaran shortcut klasik; format di-parse dari
+nol per MS-SHLLINK, stdlib murni).
+
+Enrichment (wave-7): TrackerDataBlock (signature 0xA0000003) di-parse —
+MachineID NetBIOS + droid GUID pembuat shortcut bocor dari mesin asal.
+Ini EVIDENCE IR, bukan sinyal penyalahgunaan (Explorer normal membuatnya)
+— field tracker_machine/tracker_droid di output, skor tidak berubah.
 
 Sinyal per file (semua deterministik dari data):
   - lolbin-target   : target/base path shortcut adalah interpreter/
@@ -59,6 +63,8 @@ FLAG_HAS_WORKDIR = 0x10
 FLAG_HAS_ARGS = 0x20
 FLAG_HAS_ICON = 0x40
 FLAG_UNICODE = 0x80
+
+TRACKER_SIG = 0xA0000003
 
 _RE_LOLBIN = re.compile(
     r"(cmd(?:\.exe)?\b|powershell|pwsh\b|mshta\b|wscript|cscript|rundll32|"
@@ -137,7 +143,39 @@ def parse_lnk(data: bytes) -> dict:
             if got is None:
                 raise ValueError(f"StringData '{key}' terpotong")
             strings[key], off = got
-    return {"flags": flags, "attr": attr, **strings}
+
+    tracker = _parse_tracker(data, off)
+    return {"flags": flags, "attr": attr, **strings, **tracker}
+
+
+def _parse_tracker(data: bytes, off: int) -> dict:
+    """Jalan ExtraDataBlock best-effort: cari TrackerDataBlock
+    (signature 0xA0000003) — MachineID (NetBIOS, 16 byte) + droid
+    GUIDs bocor dari mesin asal pembuat shortcut. Bukan sinyal
+    penyalahgunaan (blok ini normal dibuat Explorer) — enrichment
+    evidence IR. Block malformed/truncated -> diabaikan aman."""
+    machine = ""
+    droid = ""
+    while off + 8 <= len(data):
+        (bsize,) = struct.unpack_from("<I", data, off)
+        if bsize < 4 or off + bsize > len(data):
+            break  # truncated/malformed — stop (best-effort)
+        (sig,) = struct.unpack_from("<I", data, off + 4)
+        if sig == TRACKER_SIG and bsize >= 0x3C:
+            raw = data[off + 12:off + 12 + 16]
+            machine = raw.split(b"\x00")[0].decode("ascii",
+                                                   errors="replace").strip()
+            droid = data[off + 28:off + 28 + 32].hex()
+            break
+        if bsize == 4:
+            break  # TerminusBlock
+        off += bsize
+    out: dict[str, str] = {}
+    if machine:
+        out["tracker_machine"] = machine
+    if droid:
+        out["tracker_droid"] = droid
+    return out
 
 
 def triage_bytes(data: bytes) -> dict:
@@ -193,7 +231,8 @@ def triage_bytes(data: bytes) -> dict:
         "signals": signals,
         "evidence": evidence,
         "fields": {k: v[:160] for k, v in lnk.items()
-                   if k in ("name", "relpath", "workdir", "args", "icon")},
+                   if k in ("name", "relpath", "workdir", "args", "icon",
+                            "tracker_machine", "tracker_droid")},
         "severity_counts": counts,
         "finding_count": 1 if score > 0 else 0,
         "findings": ([{"type": "lnk-abuse", "severity": severity,

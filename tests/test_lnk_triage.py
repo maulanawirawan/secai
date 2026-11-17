@@ -138,6 +138,37 @@ class LnkTriageTest(unittest.TestCase):
             self.assertEqual(
                 lt.main(["--file", str(Path(td) / "missing.lnk")]), 2)
 
+    def test_tracker_block_enrichment(self):
+        """TrackerDataBlock (0xA0000003): MachineID + droid GUID ter-parse
+        sebagai EVIDENCE — skor shortcut normal tetap 0 (bukan sinyal)."""
+        def tracker_block(machine: str) -> bytes:
+            blk = struct.pack("<II", 0x5C, 0xA0000003) + struct.pack("<I", 0)
+            blk += machine.encode("ascii").ljust(16, b"\x00")
+            blk += b"\x11" * 16 + b"\x22" * 16   # droid (2 GUID)
+            blk += b"\x33" * 16 + b"\x44" * 16   # droidBirth (2 GUID)
+            assert len(blk) == 0x5C
+            return blk
+
+        data = build_lnk(F_RELPATH | F_UNICODE,
+                         ["C:\\Program Files\\Mozilla Firefox\\firefox.exe"])
+        data += tracker_block("WORKSTATION-42")
+        with tempfile.TemporaryDirectory() as td:
+            d = self._run(Path(td), data)
+            self.assertEqual(d["score"], 0)          # shortcut normal
+            self.assertEqual(d["clean_count"], 1)    # tetap clean
+            self.assertEqual(d["fields"]["tracker_machine"],
+                             "WORKSTATION-42")
+            self.assertEqual(d["fields"]["tracker_droid"],
+                             "11" * 16 + "22" * 16)
+
+    def test_no_tracker_no_fields(self):
+        data = build_lnk(F_RELPATH | F_UNICODE,
+                         ["C:\\Windows\\System32\\calc.exe"])
+        with tempfile.TemporaryDirectory() as td:
+            d = self._run(Path(td), data)
+            self.assertNotIn("tracker_machine", d["fields"])
+            self.assertNotIn("tracker_droid", d["fields"])
+
 
 if __name__ == "__main__":
     unittest.main()
