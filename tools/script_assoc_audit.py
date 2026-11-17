@@ -143,14 +143,22 @@ def _value_of(body: str) -> str:
 
 
 def _handler_bin(cmd: str) -> str:
-    """Basename binary handler dari command string."""
-    first = cmd.strip().strip('"').split('"')[0] if cmd else ""
-    if not first:
+    """Basename binary handler dari command string (platform-agnostik:
+    pemisah \\ dan / dipotong manual — Path POSIX salah utk path
+    Windows)."""
+    s = (cmd or "").strip()
+    if not s:
         return ""
-    if "%1" in first and not first.lower().endswith(".exe"):
+    if s.startswith('"'):
+        rest = s[1:]
+        first = rest.split('"')[0] if '"' in rest else rest
+    else:
+        first = s.split()[0] if s.split() else s
+    low = first.lower()
+    if "%1" in low and not low.endswith(".exe"):
         return "%1"
-    base = Path(first.replace("/", "\\")).name.lower()
-    return base
+    parts = re.split(r"[\\/]+", first.strip())
+    return parts[-1].lower() if parts and parts[-1] else ""
 
 
 def _is_external(cmd: str) -> bool:
