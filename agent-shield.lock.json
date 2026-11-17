@@ -1,14 +1,14 @@
 {
   "version": 1,
-  "pinned_at": "2026-11-17T19:42:18Z",
+  "pinned_at": "2026-11-17T21:01:45Z",
   "algorithm": "sha256",
   "files": {
     "SKILL.md": "30b414be6bd119481d6615fdd125a14e5712a449ef06ee65cd65156154de867f",
-    "AGENTS.md": "f4011a989ab24a1be3416c78df26ae0f5397f7148ead9c6d3671d3548973eb08",
+    "AGENTS.md": "604b8c057bb43cd7d39db027a520535961eced3dd8cadbcac3ec7b49ee6c397d",
     ".claude/skills/secai/SKILL.md": "cd9cd8742a57a58f4044bb694023e6091e368935ebdc1ddcc927b49e28f53144",
     "docs/AGENT-SAFETY.md": "5097d0aff2aa805013d283862f2e5eb3991ff763ff23fb949c6a90656d2df12b",
     "docs/LEGION-METHOD.md": "221229bc22cf9e1aa8505344067903ceb1bb615a36b4c41498d35a530965dd76",
-    "skills/registry.json": "8b485aaca8e92eb8034c93ff7cef221a2cc383aed2905dcd38b224404f05292d",
+    "skills/registry.json": "9e79c2cebfc2c01a29649786cc4a427474353b9c56ddaa282ad187735b0467a6",
     "tools/agent_shield.py": "607dd3912ba2ff47d4a338956a4ef297358d2c6b221db294b86dfa1421da5c6a",
     "core/net_guard.py": "d26069e5da1b534d950adb67b9fad850c474d93c135164c3e5e9346774b6d6d5",
     "core/net_guard_scope.py": "d5a57e224a62c2eb1570911de63b02d50fcb968269b10c40edf6fd83fe490f22",

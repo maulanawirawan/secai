@@ -7,6 +7,40 @@ as the compatibility signal.
 
 ## [Unreleased]
 
+### Added — wave-9 ops batch (4 new tools + 2 detection skills, 221 -> 225 tools / 105 -> 107 skills)
+
+Four offline triage tools and two bounded-requests skills closing the
+operations/DFIR layer (retest cycles, scope compliance, attacker-tool
+output parsing, enterprise identity), built from scratch, stdlib-only:
+
+- `retest_ledger` — diff two findings.json across runs: persisted /
+  persisted-changed / fixed / new-lead / new-info with fixed-ratio
+  (the retest-cycle states). Identity = tool+target+title (drift is
+  documented, never guessed).
+- `coverage_ledger` — scope compliance accounting: match touched
+  targets (findings or URL lists) against the authorized scope
+  (exact / suffix / wildcard / URL entries); out-of-scope hits are a
+  compliance signal, thin coverage a status lead.
+- `snaffler_log_triage` — triage Snaffler color-tagged output
+  ({BLACK}/{RED} high-value leads, credential markers, sensitive file
+  classes, low-tier inventory); format-tolerant, no credential value
+  is ever echoed.
+- `seatbelt_output_triage` — parse host-enumeration output sections:
+  autologon plaintext credentials (value never echoed), AlwaysInstall
+  Elevated both/single hive, weak UAC (EnableLUA=0, LATFP=1), LSA
+  protection off, admin-group context. Hardened config stays clean.
+- `entra_posture` — Microsoft Entra ID/M365 identity inventory via
+  discovery (issuer login.microsoftonline.com, tenant-id facts) +
+  legacy ADFS surface lead; generic "cloud identity" phrases never
+  match.
+- `ntlm_exposure_check` — WWW-Authenticate NTLM/Negotiate advertised
+  over plain HTTP (interception/relay lead, high) vs HTTPS (inventory);
+  Negotiate-only = good posture.
+
+- 30 new tests (zero-FP controls + fail-closed per tool/skill):
+  3718 passed (+31 subtests), Rust 68 tests. Registry + verdict-audit
+  curation added for both skills.
+
 ### Added — wave-8 hunt batch (1 new tool + 10 detection skills, 220 -> 221 tools / 95 -> 105 skills)
 
 One offline triage tool and ten bounded-requests detection skills

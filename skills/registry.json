@@ -1655,6 +1655,36 @@
    "needs": "target",
    "desc": "okta-posture — inventori identity Okta via discovery JSON (issuer okta.com) + lead /admin 200 tanpa indikasi login; frasa generik 'identity' TIDAK dihitung",
    "requires_evidence": false
+  },
+  {
+   "name": "entra-posture",
+   "cmd": [
+    "python",
+    "skills/entra_posture.py",
+    "--url",
+    "@TARGET@",
+    "--out",
+    "@OUT@"
+   ],
+   "safety_class": "bounded-requests",
+   "needs": "target",
+   "desc": "entra-posture — inventori identity Microsoft Entra ID/M365 via discovery (issuer login.microsoftonline.com, tenant id = fakta) + lead ADFS legacy terpapar; frasa generik 'cloud identity' TIDAK dihitung",
+   "requires_evidence": false
+  },
+  {
+   "name": "ntlm-exposure-check",
+   "cmd": [
+    "python",
+    "skills/ntlm_exposure_check.py",
+    "--url",
+    "@TARGET@",
+    "--out",
+    "@OUT@"
+   ],
+   "safety_class": "bounded-requests",
+   "needs": "target",
+   "desc": "ntlm-exposure-check — cek WWW-Authenticate NTLM/Negotiate pada HTTP polos (lead high — token dapat disadap/relay) vs https (inventori); Negotiate-only = postur baik",
+   "requires_evidence": false
   }
  ]
 }

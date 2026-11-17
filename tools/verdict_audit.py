@@ -114,6 +114,8 @@ STRATEGI = {
     "saml-metadata-audit": ("D", "parse XML deterministik; unsigned assertion = konfigurasi lead reproducible"),
     "vcenter-posture": ("E", "marker + versi -> KB/KEV vCenter via cve-matcher bila ada entri; tanpa versi = postur '-'"),
     "okta-posture": ("-", "inventori identity; lead /admin butuh verifikasi konten manual"),
+    "entra-posture": ("D", "issuer/tenant + ADFS marker ketat reproducible; federasi legacy = lead konfigurasi"),
+    "ntlm-exposure-check": ("D", "header WWW-Authenticate = fakta reproducible; NTLM over http = lead intercept"),
     "litellm-posture": ("E", "versi -> KB/KEV (sudah jalan)"),
     "ollama-posture": ("E", "versi -> KB Probllama (sudah jalan)"),
     "vllm-posture": ("E", "marker metrik vllm:* = signature kuat; versi -> KB bila ada entri"),
