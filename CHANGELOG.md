@@ -7,6 +7,48 @@ as the compatibility signal.
 
 ## [Unreleased]
 
+### Added — wave-8 hunt batch (1 new tool + 10 detection skills, 220 -> 221 tools / 95 -> 105 skills)
+
+One offline triage tool and ten bounded-requests detection skills
+closing uncovered web/enterprise surfaces from the reference hunt
+libraries, built from scratch, stdlib-only, zero-FP-gated:
+
+- `tools/dom_sink_scan` — static DOM-XSS triage of JS/HTML artifacts:
+  postMessage handlers that feed `event.data` into sinks without
+  origin validation (strict `===` = mitigated, `indexOf`/`endsWith`
+  = weak lead), and URL-derived data (hash/search) flowing into DOM
+  sinks — the client-side half that server-side/WAF testing misses.
+- `host_header_abuse_check` — canary X-Forwarded-Host vs baseline
+  (differential): reflection into absolute URLs = reset/cache
+  poisoning pre-check lead.
+- `cache_poison_clue_check` — clue-level cache poisoning: cacheable
+  response + canary reflection + replay still-served-with-marker;
+  no-store or no reflection stays clean (zero-FP).
+- `spring_actuator_surface` — exposed Spring Boot Actuator endpoints
+  (strict `_links`/`propertySources`/octet-stream markers; 401 =
+  protected).
+- `laravel_surface` — exposed Laravel artifacts: /.env (critical),
+  Ignition health-check (high), Telescope/Horizon (medium); SPA pages
+  without markers stay clean.
+- `nextjs_surface` — Next.js inventory (buildId) + dev-server-in-
+  production indicator lead.
+- `aspx_trace_surface` — exposed trace.axd / ELMAH error log (high)
+  + X-AspNet-Version header inventory.
+- `java_console_surface` — exposed Tomcat Manager / JBoss jmx+web
+  console / WebLogic console (strict per-product signatures; 401 =
+  protected).
+- `saml_metadata_audit` — parse exposed SAML metadata (xml.etree):
+  expired validUntil (medium), WantAssertionsSigned=false (high),
+  http:// entityID (medium).
+- `vcenter_posture` / `okta_posture` — enterprise appliance/identity
+  posture: strict product tokens only ("vmware"/"vcenter"/"vsphere",
+  issuer okta.com); generic phrases never match; version facts feed
+  cve-matcher without CVE fabrication.
+
+- 56 new tests (zero-FP controls + fail-closed per tool/skill):
+  3688 passed (+31 subtests), Rust 68 tests. Registry entries +
+  verdict-audit curation added for all 10 skills.
+
 ### Added — wave-7 triage batch (8 new tools, 212 -> 220)
 
 Eight offline triage tools closing more gaps from the reference

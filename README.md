@@ -9,7 +9,7 @@
 [![CI](https://github.com/maulanawirawan/secai/actions/workflows/ci.yml/badge.svg)](https://github.com/maulanawirawan/secai/actions/workflows/ci.yml)
 [![release](https://img.shields.io/badge/release-v0.1.0-blue)](https://github.com/maulanawirawan/secai/releases)
 [![skills](https://img.shields.io/badge/skills-95-8A2BE2)](#whats-inside)
-[![tools](https://img.shields.io/badge/tools-220-brightgreen)](#whats-inside)
+[![tools](https://img.shields.io/badge/tools-221-brightgreen)](#whats-inside)
 [![coverage](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/maulanawirawan/secai/gh-pages/coverage-badge.json)](https://github.com/maulanawirawan/secai/actions/workflows/ci.yml)
 [![python](https://img.shields.io/badge/python-3.10%2B-3776AB)](#quick-start-try-it-in-60-seconds)
 [![rust](https://img.shields.io/badge/rust-stable-orange)](#quick-start-try-it-in-60-seconds)
@@ -56,7 +56,7 @@ flowchart LR
 
 > **secai** = **sec**urity + **a**gentic **i**ntelligence. It's an
 > evidence-first cybersecurity engine: **95 detection skills** and
-> **220 offline triage tools** (318 scripts in all), a native Rust core,
+> **221 offline triage tools** (329 scripts in all), a native Rust core,
 > one strict "findings" format, and an MCP server — so Claude Code,
 > Cursor, or any shell-capable AI agent can drive it for you.
 
