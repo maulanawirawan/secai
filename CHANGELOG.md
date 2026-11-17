@@ -7,6 +7,25 @@ as the compatibility signal.
 
 ## [Unreleased]
 
+### Added — wave-10 deep-mine batch (1 tool + 1 skill, 225 -> 226 tools / 107 -> 108 skills)
+
+Final mineable items from the deep pass over the reference hunt
+libraries:
+
+- `patch_guard_triage` — recover N-day bug classes from vendor patch
+  diffs (unified diff): added security guards reveal the fixed bug
+  class (bounds -> OOB, checked arithmetic -> integer overflow, locks
+  -> race, zeroing -> info leak, refcount checks -> UAF, access
+  checks -> missing authz), dangerous-call removals, and CVE/GHSA
+  references as identity facts. Class is inferred, never claimed.
+- `sharepoint_posture` — Microsoft SharePoint on-premises farm
+  detection (/_layouts, /_api/web, X-SharePointHealthScore; strict
+  product tokens) with build-version facts for cve-matcher and an
+  open-API lead when /_api/web answers without auth.
+
+- 10 new tests: 3728 passed (+31 subtests), Rust 68 tests. Registry +
+  verdict-audit curation added.
+
 ### Added — wave-9 ops batch (4 new tools + 2 detection skills, 221 -> 225 tools / 105 -> 107 skills)
 
 Four offline triage tools and two bounded-requests skills closing the

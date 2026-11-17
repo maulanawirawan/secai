@@ -116,6 +116,7 @@ STRATEGI = {
     "okta-posture": ("-", "inventori identity; lead /admin butuh verifikasi konten manual"),
     "entra-posture": ("D", "issuer/tenant + ADFS marker ketat reproducible; federasi legacy = lead konfigurasi"),
     "ntlm-exposure-check": ("D", "header WWW-Authenticate = fakta reproducible; NTLM over http = lead intercept"),
+    "sharepoint-posture": ("E", "marker + build 15/16.0.x -> KB/KEV SharePoint via cve-matcher bila ada entri; tanpa versi = postur"),
     "litellm-posture": ("E", "versi -> KB/KEV (sudah jalan)"),
     "ollama-posture": ("E", "versi -> KB Probllama (sudah jalan)"),
     "vllm-posture": ("E", "marker metrik vllm:* = signature kuat; versi -> KB bila ada entri"),

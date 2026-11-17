@@ -1685,6 +1685,21 @@
    "needs": "target",
    "desc": "ntlm-exposure-check — cek WWW-Authenticate NTLM/Negotiate pada HTTP polos (lead high — token dapat disadap/relay) vs https (inventori); Negotiate-only = postur baik",
    "requires_evidence": false
+  },
+  {
+   "name": "sharepoint-posture",
+   "cmd": [
+    "python",
+    "skills/sharepoint_posture.py",
+    "--url",
+    "@TARGET@",
+    "--out",
+    "@OUT@"
+   ],
+   "safety_class": "bounded-requests",
+   "needs": "target",
+   "desc": "sharepoint-posture — deteksi farm SharePoint on-prem (maks 3 GET /_layouts/15/start.aspx,/_api/web,/): token 'sharepoint'/_layouts/_vti_bin/X-SharePointHealthScore = lead + fakta versi utk cve-matcher; frasa generik 'document management' TIDAK dihitung",
+   "requires_evidence": false
   }
  ]
 }
