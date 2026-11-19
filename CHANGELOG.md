@@ -7,6 +7,34 @@ as the compatibility signal.
 
 ## [Unreleased]
 
+### Fixed — wave-12 reliability pass (no count change: 226 tools / 111 skills)
+
+Found by automated sweeps over all 340 tool/skill CLIs (cp1252 console,
+malformed inputs, every evidence-only skill run with its evidence
+missing); each fix is locked by `tests/test_reliability_hardening.py`.
+
+- **Zero-FP:** six header-family skills (`http-security-headers`,
+  `cache-control-posture`, `clickjacking-protection-checker`,
+  `csp-analyzer`, `hsts-preload-checker`, `xss-protection-header-checker`)
+  reported "header absent" L1 leads when the evidence file did not exist.
+  They now fail closed (exit 2, no claim). New invariant test: no
+  evidence-only skill may claim anything from missing evidence.
+- **Pipeline:** `cookie-scope` parsed the HTML evidence body as JSON and
+  crashed on every real scan; it now reads the sibling `.headers` file.
+- **Fail-closed inputs:** 14 CLIs raised a Python traceback on a missing,
+  empty, binary or CRLF input file; they now exit 2 with a message.
+- **Narrow console:** `chain_planner --help`, `ingest_gate`,
+  `injection_guard`, `target_scout`, `agent_shield scan` no longer crash
+  on a Windows cp1252 console. `target_scout` strips a UTF-8 BOM.
+- **Quickstart truth:** `tools/lab_target.py` gained a CLI (`--port`,
+  default 8777 as documented; `--bind`); `secai.py validate` without the
+  Rust build now accepts the canonical `{ok, findings: [...]}` file.
+- **Doc truth:** README (en/es/zh), SKILL.md counts had drifted (95/93
+  skills, 200 tools, 301/336 scripts). Fixed, and
+  `tests/test_doc_counts_truth.py` now derives the counts from the repo
+  and fails on any stale count claim.
+- pytest 3744 -> 3759 passed (31 -> 114 subtests); Rust 68.
+
 ### Added — wave-11 active-classes batch (3 skills + agent playbook, 108 -> 111 skills)
 
 The active-probing classes enter the repo in two forms — deterministic

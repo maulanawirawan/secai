@@ -9,7 +9,7 @@ description: Evidence-first security assessment via CLI — scan a target's
 
 # secai skill — drive the evidence-first scanner
 
-secai is an evidence-first security assessment engine: 93 standalone
+secai is an evidence-first security assessment engine: 111 standalone
 detection skills, a Rust core with one strict findings contract, and a
 simple rule — **no proof, no report**. This file teaches you (the agent)
 how to drive it.
@@ -51,7 +51,7 @@ cargo build --release --manifest-path core-rs/Cargo.toml
 | `ledger` | 3-layer session memory (fact/intent/recall) | `python secai.py ledger fact "..." --evidence "..."` |
 | `report` | package findings into a report bundle | `python secai.py report --out findings/pack` |
 | `validate` | contract-check a findings.json (works without Rust build) | `python secai.py validate findings/scan/findings.json` |
-| `skills` | list the 93 skills + safety classes | `python secai.py skills --class read-only --text cors` |
+| `skills` | list the 111 skills + safety classes | `python secai.py skills --class read-only --text cors` |
 | `mcp` | run the MCP server | `python secai.py mcp` |
 | `lab` | local practice target on 127.0.0.1 | `python secai.py lab` |
 

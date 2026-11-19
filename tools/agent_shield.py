@@ -152,7 +152,18 @@ def cmd_scan(watched: "tuple[str, ...]" = WATCHED_FILES,
                      "hit di file ini = insiden, bukan temuan kerentanan")}
 
 
+def _safe_console() -> None:
+    """Never crash on a narrow console (Windows cp1252): scan snippets
+    quote arbitrary file text, so escape what the console cannot show."""
+    for stream in (sys.stdout, sys.stderr):
+        try:
+            stream.reconfigure(errors="backslashreplace")
+        except (AttributeError, ValueError):
+            pass
+
+
 def main(argv: list[str] | None = None) -> int:
+    _safe_console()
     parser = argparse.ArgumentParser(
         description="Tamper-evidence + deteksi penyelundupan instruksi "
                     "untuk file panduan agent (SKILL.md, AGENTS.md, ...).")

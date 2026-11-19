@@ -239,6 +239,12 @@ class NarrowConsoleTest(unittest.TestCase):
                 self.assertEqual(code, 0, text[-300:])
                 self.assertNotIn(TRACEBACK, text)
 
+    def test_agent_shield_scan_on_cp1252_console(self):
+        # scan quotes snippets of guidance docs (arrows, CJK) to stdout
+        code, text = _run(["tools/agent_shield.py", "scan"], ROOT)
+        self.assertNotIn(TRACEBACK, text)
+        self.assertIn(code, (0, 1))
+
     def test_ingest_gate_output_on_cp1252_console(self):
         with tempfile.TemporaryDirectory() as td:
             p = Path(td) / "page.html"
