@@ -167,11 +167,21 @@ def validate_python_fallback(args: list[str]) -> int:
     for path in args:
         try:
             document = json.loads(Path(path).read_text(encoding="utf-8"))
-        except (OSError, json.JSONDecodeError) as exc:
+        except (OSError, ValueError) as exc:
             print(f"[ERROR   ] {path}: {exc}", file=sys.stderr)
             bad += 1
             continue
-        items = document if isinstance(document, list) else [document]
+        # Canonical skill output = wrapper {"ok": ..., "findings": [...]}
+        # (what write_findings emits and core-rs validate accepts). A bare
+        # finding object or a list of findings is also accepted.
+        if isinstance(document, dict) and isinstance(
+                document.get("findings"), list):
+            items = document["findings"]
+            if not items:
+                print(f"[OK      ] {path}: 0 findings")
+                continue
+        else:
+            items = document if isinstance(document, list) else [document]
         for i, finding in enumerate(items):
             errors = validate_finding(finding)
             label = path if len(items) == 1 else f"{path}[{i}]"

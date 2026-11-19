@@ -325,7 +325,7 @@ def main(argv: "list[str] | None" = None) -> int:
         if not events:
             raise ValueError("nol event Sysmon relevan (EID 1/11) "
                              "ter-parse — pastikan ini ekspor XML Sysmon")
-    except ValueError as exc:
+    except (OSError, ValueError) as exc:
         print(f"[lolbin-scan] input error: {exc}", file=sys.stderr)
         return 2
 

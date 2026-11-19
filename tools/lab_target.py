@@ -21,6 +21,7 @@ import re
 import secrets
 import shutil
 import sqlite3
+import sys
 import tempfile
 import threading
 import time
@@ -1294,16 +1295,45 @@ def stop_lab(server: LabServer) -> None:
     shutil.rmtree(server.files_base, ignore_errors=True)
 
 
-if __name__ == "__main__":
-    import os
+DEFAULT_PORT = 8777  # the port README/QUICKSTART use; --port 0 = ephemeral
+
+
+def main(argv: "list[str] | None" = None) -> int:
+    import argparse
+    ap = argparse.ArgumentParser(
+        description="secai local practice target (deliberately vulnerable; "
+                    "binds 127.0.0.1 only by default)")
+    ap.add_argument("--port", type=int, default=None,
+                    help=f"TCP port (default {DEFAULT_PORT}; 0 = random free "
+                         "port). Env SECAI_LAB_PORT overrides.")
+    ap.add_argument("--bind", default=None,
+                    help="bind address (default 127.0.0.1). Env "
+                         "SECAI_LAB_BIND overrides.")
+    args = ap.parse_args(argv)
     # dukungan lab-in-docker: bind/port lewat env (sandbox menaruh lab di
-    # jaringan internal Docker dan engine mengakses via nama kontainer)
-    port = int(os.environ.get("SECAI_LAB_PORT", "0") or 0)
-    bind = os.environ.get("SECAI_LAB_BIND", "127.0.0.1")
-    server = LabServer(bind=bind, port=port)
+    # jaringan internal Docker dan engine mengakses via nama kontainer) —
+    # env tetap menang supaya tools/exploit_sandbox.py tidak berubah
+    env_port = os.environ.get("SECAI_LAB_PORT")
+    port = (int(env_port) if env_port else
+            (args.port if args.port is not None else DEFAULT_PORT))
+    bind = os.environ.get("SECAI_LAB_BIND") or args.bind or "127.0.0.1"
+    try:
+        server = LabServer(bind=bind, port=port)
+    except OSError as exc:
+        print(f"lab target: cannot bind {bind}:{port} ({exc}) — port in "
+              "use? try --port 0 for a random free port", file=sys.stderr)
+        return 2
     threading.Thread(target=server.serve_forever, daemon=True).start()
-    print(f"lab target aktif: http://{bind}:{server.server_address[1]}")
+    print(f"lab target aktif: http://{bind}:{server.server_address[1]}",
+          flush=True)
     try:
         threading.Event().wait()
+    except KeyboardInterrupt:
+        pass
     finally:
         stop_lab(server)
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

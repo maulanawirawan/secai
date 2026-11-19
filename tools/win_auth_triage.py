@@ -381,7 +381,7 @@ def main(argv: "list[str] | None" = None) -> int:
             raise ValueError(
                 f"nol event relevan ({', '.join(map(str, sorted(RELEVANT_EIDS)))}) "
                 "ter-parse — pastikan ini ekspor XML Windows Security")
-    except ValueError as exc:
+    except (OSError, ValueError) as exc:
         print(f"[win-auth-triage] input error: {exc}", file=sys.stderr)
         return 2
 

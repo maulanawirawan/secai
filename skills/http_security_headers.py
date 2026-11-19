@@ -54,22 +54,27 @@ DISCLOSURE_HEADERS: list[tuple[str, str, str]] = [
 ]
 
 
-def load_headers(from_raw: str | None, headers_path: str | None) -> dict:
+def load_headers(from_raw: str | None,
+                 headers_path: str | None) -> "dict | None":
     """Load header JSON dari --headers-file atau sibling <from-raw>.headers.
-    Fail-soft: file tak ada/tak terbaca -> dict kosong + WARN di stderr
-    (temuan absence tetap dihitung dari headers yang TERLIHAT saja)."""
+    Fail-CLOSED: tanpa bukti yang bisa dibaca (file tak ada / rusak / bukan
+    object JSON) -> None, dan main() tidak membuat klaim apa pun (dulu
+    fail-soft {} -> 5 klaim "absent" palsu dari NOL bukti). Object JSON
+    kosong tetap bukti sah (respons tanpa header tsb)."""
     path = Path(headers_path) if headers_path else (
         Path(str(from_raw) + ".headers") if from_raw else None)
     if path is None or not path.exists():
-        return {}
+        print(f"WARN: bukti header {path} tidak ada", file=sys.stderr)
+        return None
     try:
         data = json.loads(path.read_text(encoding="utf-8-sig"))
     except Exception as exc:
         print(f"WARN: header {path} tidak terbaca: {exc}", file=sys.stderr)
-        return {}
+        return None
     if isinstance(data, dict):
         return {str(k).lower(): v for k, v in data.items()}
-    return {}
+    print(f"WARN: header {path} bukan object JSON", file=sys.stderr)
+    return None
 
 
 def audit(url: str, headers: dict) -> tuple[list[dict], dict]:
@@ -180,6 +185,11 @@ def main() -> int:
     ap.add_argument("--out", default="hsh_findings.json", help="path findings.json output")
     args = ap.parse_args()
     headers = load_headers(args.from_raw, args.headers_file)
+    if headers is None:
+        print("http-security-headers: tidak ada bukti header (.headers) -> tidak ada "
+              "klaim (fail-closed; jalankan banner_posture --save-raw "
+              "dulu atau beri --headers-file)", file=sys.stderr)
+        return 2
     rows, meta = audit(args.url, headers)
     write_findings(args.out, rows, {**meta, "safety_class": "read-only"})
     aman = sum(1 for r in rows if r.get("category") == "AMAN")

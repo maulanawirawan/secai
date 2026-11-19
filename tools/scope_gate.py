@@ -420,7 +420,7 @@ def parse_policy_file(path: str) -> ParsedPolicy:
         data = json.loads(p.read_text(encoding="utf-8"))
     except OSError as exc:
         raise PolicyError(f"kebijakan tak bisa dibaca {path!r}: {exc}") from exc
-    except json.JSONDecodeError as exc:
+    except ValueError as exc:  # JSONDecodeError + UnicodeDecodeError
         raise PolicyError(f"kebijakan bukan JSON valid {path!r}: {exc}") from exc
 
     if not isinstance(data, dict):

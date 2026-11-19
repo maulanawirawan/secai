@@ -349,7 +349,12 @@ def main(argv: list[str] | None = None) -> int:
     if not fp.exists():
         print(f"findings tidak ada: {fp} (fail-closed)", file=sys.stderr)
         return 2
-    leads = load_leads(fp)
+    try:
+        leads = load_leads(fp)
+    except (OSError, ValueError, AttributeError) as exc:
+        print(f"findings tidak valid: {fp}: {exc} (fail-closed)",
+              file=sys.stderr)
+        return 2
     if not leads:
         print("[planner] tidak ada lead substantif — rencana kosong "
               "(tanpa bukti, tanpa rencana)", file=sys.stderr)

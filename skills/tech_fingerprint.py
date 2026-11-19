@@ -82,6 +82,10 @@ def main() -> int:
     ap.add_argument("--from-raw", required=True, help="path HTML evidence tersimpan (0 request)")
     ap.add_argument("--out", default="tech_findings.json", help="path output findings JSON")
     args = ap.parse_args()
+    if not Path(args.from_raw).is_file():
+        print("tech-fingerprint: bukti --from-raw tidak ada: %s -> tidak ada klaim "
+              "(fail-closed)" % args.from_raw, file=sys.stderr)
+        return 2
     html = Path(args.from_raw).read_text(encoding="utf-8-sig", errors="replace")
     rows, meta = audit(args.url, html)
     meta["safety_class"] = "read-only"

@@ -217,7 +217,16 @@ def main() -> int:
                     help="file bukti untuk --mode evidence (mis. banner.html)")
     args = ap.parse_args()
 
-    doc = json.loads(Path(args.findings).read_text(encoding="utf-8"))
+    try:
+        doc = json.loads(Path(args.findings).read_text(encoding="utf-8"))
+    except (OSError, ValueError) as exc:
+        print(f"--findings tidak terbaca/bukan JSON: {exc} (fail-closed)",
+              file=sys.stderr)
+        return 2
+    if not isinstance(doc, dict):
+        print("--findings harus object JSON {findings: [...]} "
+              "(fail-closed)", file=sys.stderr)
+        return 2
 
     if args.mode == "evidence":
         stamped, summary = stamp_evidence(doc.get("findings", []),

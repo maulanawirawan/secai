@@ -316,7 +316,18 @@ def _read_input(path: Path) -> str:
     return path.read_text(encoding="utf-8", errors="replace")
 
 
+def _safe_console() -> None:
+    """Never crash on a narrow console (Windows cp1252): unencodable
+    characters are escaped instead of raising UnicodeEncodeError."""
+    for stream in (sys.stdout, sys.stderr):
+        try:
+            stream.reconfigure(errors="backslashreplace")
+        except (AttributeError, ValueError):
+            pass
+
+
 def main(argv: list[str] | None = None) -> int:
+    _safe_console()
     ap = argparse.ArgumentParser(
         description="Gerbang pra-ingesti konten tidak tepercaya "
                     "(indirect prompt injection) — offline, fail-closed.")

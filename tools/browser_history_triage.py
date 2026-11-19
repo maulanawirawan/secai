@@ -282,6 +282,12 @@ def triage_file(path: Path, add, top: int, show_query: bool) -> "dict | None":
             "skema bukan Chromium (urls/visits) maupun Firefox "
             "(moz_places/moz_historyvisits) — fail-closed")
         return None
+    except sqlite3.Error as exc:
+        # sqlite opens lazily: a non-database file only fails on the
+        # first query — report it like an unopenable file (fail-closed)
+        add("input-unreadable", "high", str(path), "-",
+            f"basis data tidak dapat dibaca: {exc}")
+        return None
     finally:
         db.close()
 

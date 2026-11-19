@@ -84,6 +84,10 @@ def main() -> int:
                     help="HTML tersimpan (nol request)")
     ap.add_argument("--out", default="js_findings.json")
     args = ap.parse_args()
+    if not Path(args.from_raw).is_file():
+        print("js-endpoints: bukti --from-raw tidak ada: %s -> tidak ada klaim "
+              "(fail-closed)" % args.from_raw, file=sys.stderr)
+        return 2
     html = Path(args.from_raw).read_text(encoding="utf-8", errors="replace")
     rows, meta = audit(args.url, html)
     write_findings(args.out, rows, {**meta, "safety_class": "read-only"})

@@ -181,7 +181,18 @@ def _now_iso() -> str:
             .strftime("%Y-%m-%dT%H:%M:%S+00:00"))
 
 
+def _safe_console() -> None:
+    """Never crash on a narrow console (Windows cp1252): unencodable
+    characters are escaped instead of raising UnicodeEncodeError."""
+    for stream in (sys.stdout, sys.stderr):
+        try:
+            stream.reconfigure(errors="backslashreplace")
+        except (AttributeError, ValueError):
+            pass
+
+
 def main(argv: list[str] | None = None) -> int:
+    _safe_console()
     parser = argparse.ArgumentParser(
         description="Scout murah: klasifikasi tier tenaga per target "
                     "(SOFT/GUARDED/UNREACHABLE) sebelum scan mahal.")
@@ -197,8 +208,15 @@ def main(argv: list[str] | None = None) -> int:
 
     targets = list(args.targets)
     if args.targets_file:
-        lines = Path(args.targets_file).read_text(
-            encoding="utf-8").splitlines()
+        try:
+            # utf-8-sig: a BOM must not become part of the first target
+            lines = Path(args.targets_file).read_text(
+                encoding="utf-8-sig").splitlines()
+        except (OSError, ValueError) as exc:
+            print(f"[target-scout] input error: --targets-file "
+                  f"{args.targets_file}: {exc} (fail-closed)",
+                  file=sys.stderr)
+            return 2
         targets += [line for line in (l.strip() for l in lines) if line]
     if not targets:
         parser.error("berikan target posisional atau --targets-file")

@@ -8,26 +8,23 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "core"))
 from findings import make_finding, write_findings
 
 def _load_headers(from_raw, headers_file):
-    if headers_file:
-        p = Path(headers_file)
-        if not p.exists():
-            print(f"WARN: headers-file {p} tidak ditemukan", file=sys.stderr)
-            return {}
-        try:
-            d=json.loads(p.read_text(encoding="utf-8-sig"))
-            return {k.lower():v for k,v in d.items()} if isinstance(d,dict) else {}
-        except Exception as e:
-            print(f"WARN: headers-file {p}: {e}", file=sys.stderr)
-            return {}
-    hpath=Path(str(from_raw)+".headers")
-    if not hpath.exists():
-        return {}
+    """Header JSON from --headers-file or sibling <from-raw>.headers.
+    Returns None when there is NO usable evidence (missing, unreadable,
+    not a JSON object) -- the caller must then make no claim at all.
+    An empty JSON object IS evidence (a response with no such headers)."""
+    p = Path(headers_file) if headers_file else Path(str(from_raw) + ".headers")
+    if not p.exists():
+        print(f"WARN: header evidence {p} tidak ditemukan", file=sys.stderr)
+        return None
     try:
-        d=json.loads(hpath.read_text(encoding="utf-8-sig"))
-        return {k.lower():v for k,v in d.items()} if isinstance(d,dict) else {}
+        d = json.loads(p.read_text(encoding="utf-8-sig"))
     except Exception as e:
-        print(f"WARN: header {hpath}: {e}", file=sys.stderr)
-        return {}
+        print(f"WARN: header evidence {p}: {e}", file=sys.stderr)
+        return None
+    if not isinstance(d, dict):
+        print(f"WARN: header evidence {p} bukan object JSON", file=sys.stderr)
+        return None
+    return {str(k).lower(): v for k, v in d.items()}
 
 
 def audit(url, headers):
@@ -61,6 +58,11 @@ def main():
     ap.add_argument("--out", default="xss_protection_header_checker_findings.json")
     args=ap.parse_args()
     headers=_load_headers(args.from_raw, args.headers_file)
+    if headers is None:
+        print("xss-protection-header-checker: tidak ada bukti header (.headers) -> tidak ada "
+              "klaim (fail-closed; jalankan banner_posture --save-raw "
+              "dulu atau beri --headers-file)", file=sys.stderr)
+        return 2
     rows,meta=audit(args.url, headers)
     meta["safety_class"]="read-only"
     write_findings(args.out, rows, meta)

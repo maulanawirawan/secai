@@ -316,7 +316,18 @@ def plan(findings: "list[dict]", tools_dir: "Path | None") -> dict:
     }
 
 
+def _safe_console() -> None:
+    """Never crash on a narrow console (Windows cp1252): unencodable
+    characters are escaped instead of raising UnicodeEncodeError."""
+    for stream in (sys.stdout, sys.stderr):
+        try:
+            stream.reconfigure(errors="backslashreplace")
+        except (AttributeError, ValueError):
+            pass
+
+
 def main(argv: "list[str] | None" = None) -> int:
+    _safe_console()
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--findings", type=Path, required=True,
                     help="findings.json (array / {findings: [...]})")

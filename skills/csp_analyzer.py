@@ -22,32 +22,24 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "core"))
 from findings import make_finding, write_findings  # noqa: E402
 
 
-def _load_headers(from_raw: str, headers_file: str | None) -> dict:
-    """Load headers JSON dari --headers-file atau sibling .headers."""
-    if headers_file:
-        p = Path(headers_file)
-        if not p.exists():
-            print(f"WARN: headers-file {p} tidak ditemukan -> header kosong", file=sys.stderr)
-            return {}
-        try:
-            data = json.loads(p.read_text(encoding="utf-8-sig"))
-            if isinstance(data, dict):
-                return {k.lower(): v for k, v in data.items()}
-            return {}
-        except Exception as exc:
-            print(f"WARN: headers-file {p} tidak terbaca: {exc}", file=sys.stderr)
-            return {}
-    hpath = Path(from_raw + ".headers")
-    if not hpath.exists():
-        return {}
+def _load_headers(from_raw: str, headers_file: str | None) -> "dict | None":
+    """Header JSON from --headers-file or sibling <from-raw>.headers.
+    Returns None when there is NO usable evidence (missing, unreadable,
+    not a JSON object) -- the caller must then make no claim at all.
+    An empty JSON object IS evidence (a response with no such headers)."""
+    p = Path(headers_file) if headers_file else Path(str(from_raw) + ".headers")
+    if not p.exists():
+        print(f"WARN: header evidence {p} tidak ditemukan", file=sys.stderr)
+        return None
     try:
-        data = json.loads(hpath.read_text(encoding="utf-8-sig"))
-        if isinstance(data, dict):
-            return {k.lower(): v for k, v in data.items()}
-        return {}
-    except Exception as exc:
-        print(f"WARN: header {hpath} tidak terbaca: {exc}", file=sys.stderr)
-        return {}
+        d = json.loads(p.read_text(encoding="utf-8-sig"))
+    except Exception as e:
+        print(f"WARN: header evidence {p}: {e}", file=sys.stderr)
+        return None
+    if not isinstance(d, dict):
+        print(f"WARN: header evidence {p} bukan object JSON", file=sys.stderr)
+        return None
+    return {str(k).lower(): v for k, v in d.items()}
 
 
 def audit(url: str, headers: dict) -> tuple[list[dict], dict]:
@@ -147,6 +139,11 @@ def main() -> int:
     args = ap.parse_args()
 
     headers = _load_headers(args.from_raw, args.headers_file)
+    if headers is None:
+        print("csp-analyzer: tidak ada bukti header (.headers) -> tidak ada "
+              "klaim (fail-closed; jalankan banner_posture --save-raw "
+              "dulu atau beri --headers-file)", file=sys.stderr)
+        return 2
     rows, meta = audit(args.url, headers)
     meta["safety_class"] = "read-only"
     write_findings(args.out, rows, meta)

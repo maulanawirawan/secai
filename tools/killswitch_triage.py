@@ -393,7 +393,7 @@ def main(argv: list[str] | None = None) -> int:
 
     try:
         entries, db_meta = load_db(args.db)
-    except SystemExit:
+    except (SystemExit, OSError):
         print("[killswitch_triage] --db tidak valid (bukan JSON DB "
               "families/indicators atau terlalu besar)", file=sys.stderr)
         return 2
@@ -407,7 +407,7 @@ def main(argv: list[str] | None = None) -> int:
         try:
             events, ev_meta = parse_events_file(args.events)
             ok = True
-        except SystemExit:
+        except (SystemExit, OSError):
             print(f"[killswitch_triage] --events {args.events} tidak "
                   "ter-parse sebagai XML Windows (fail-closed)",
                   file=sys.stderr)
@@ -416,8 +416,9 @@ def main(argv: list[str] | None = None) -> int:
         try:
             domains, dns_meta = parse_dns_file(args.dns)
             ok = True
-        except SystemExit:
-            print(f"[killswitch_triage] --dns {args.dns} terlalu besar",
+        except (SystemExit, OSError):
+            print(f"[killswitch_triage] --dns {args.dns} tidak terbaca "
+                  "atau terlalu besar (fail-closed)",
                   file=sys.stderr)
             return 2
     if not ok:

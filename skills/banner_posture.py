@@ -214,6 +214,10 @@ def main() -> int:
                          "ke target (mode re-run/verifikasi)")
     args = ap.parse_args()
     if args.from_raw:
+        if not Path(args.from_raw).is_file():
+            print("banner-posture: bukti --from-raw tidak ada: %s -> tidak ada klaim "
+                  "(fail-closed)" % args.from_raw, file=sys.stderr)
+            return 2
         raw = Path(args.from_raw).read_text(encoding="utf-8",
                                             errors="replace")
         # header tersimpan dari run sebelumnya (<file>.headers, JSON) —

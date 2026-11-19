@@ -128,6 +128,22 @@ def audit(url: str, headers: dict) -> tuple[list[dict], dict]:
                   "matched": leads > 0}
 
 
+def _load_headers(from_raw: str) -> "dict | None":
+    """Header dict from --from-raw itself (a JSON headers file) or, as the
+    scan engine passes it, from the sibling <evidence>.headers of a saved
+    HTML body (banner_posture --save-raw). None = no usable evidence."""
+    for cand in (Path(from_raw), Path(str(from_raw) + ".headers")):
+        if not cand.is_file():
+            continue
+        try:
+            data = json.loads(cand.read_text(encoding="utf-8-sig"))
+        except (OSError, ValueError):
+            continue
+        if isinstance(data, dict):
+            return data
+    return None
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--url", required=True)
@@ -135,7 +151,12 @@ def main() -> int:
                     help="file evidence headers (JSON dict)")
     ap.add_argument("--out", default="cookie_scope_findings.json")
     args = ap.parse_args()
-    headers = json.loads(Path(args.from_raw).read_text(encoding="utf-8"))
+    headers = _load_headers(args.from_raw)
+    if headers is None:
+        print("cookie-scope: tidak ada bukti header (JSON dict di "
+              "--from-raw atau sibling .headers) -> tidak ada klaim "
+              "(fail-closed)", file=sys.stderr)
+        return 2
     rows, meta = audit(args.url, headers)
     write_findings(args.out, rows, {**meta, "safety_class": "read-only"})
     print(f"cookie-scope: {len(rows)} temuan ({meta.get('cookies', 0)} cookie) "

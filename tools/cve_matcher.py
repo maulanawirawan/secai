@@ -586,8 +586,17 @@ def main() -> int:
             print(f"cve-matcher: input findings tidak ada: {fp}",
                   file=sys.stderr)
             return 2
-        in_rows.extend(json.loads(p.read_text(encoding="utf-8"))
-                       .get("findings", []))
+        try:
+            doc = json.loads(p.read_text(encoding="utf-8"))
+        except (OSError, ValueError) as exc:
+            print(f"cve-matcher: input findings tidak valid: {fp}: {exc}",
+                  file=sys.stderr)
+            return 2
+        if not isinstance(doc, dict):
+            print(f"cve-matcher: input findings harus object JSON: {fp}",
+                  file=sys.stderr)
+            return 2
+        in_rows.extend(doc.get("findings", []))
 
     if not KEV_PATH.exists():
         kev_entries = None

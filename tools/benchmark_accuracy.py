@@ -309,7 +309,18 @@ def main() -> int:
                     help="registry untuk scan benchmark (default: mini 14 skill)")
     args = ap.parse_args()
     if args.report:
-        print_report(json.loads(Path(args.report).read_text(encoding="utf-8")))
+        try:
+            report = json.loads(
+                Path(args.report).read_text(encoding="utf-8"))
+        except (OSError, ValueError) as exc:
+            print(f"--report tidak terbaca/bukan JSON: {exc} (fail-closed)",
+                  file=sys.stderr)
+            return 2
+        if not isinstance(report, dict):
+            print("--report harus object JSON accuracy (fail-closed)",
+                  file=sys.stderr)
+            return 2
+        print_report(report)
         return 0
     if not args.run:
         ap.error("gunakan --run (benchmark penuh) atau --report (metrik)")

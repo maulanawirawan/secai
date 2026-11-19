@@ -146,7 +146,17 @@ def scan_document(document) -> dict:
     }
 
 
+def _safe_console() -> None:
+    """Never crash on a narrow console (Windows cp1252)."""
+    for stream in (sys.stdout, sys.stderr):
+        try:
+            stream.reconfigure(errors="backslashreplace")
+        except (AttributeError, ValueError):
+            pass
+
+
 def main(argv: list[str] | None = None) -> int:
+    _safe_console()
     parser = argparse.ArgumentParser(
         description="Tandai pola prompt-injection di findings/bukti "
                     "sebelum dibaca manusia/agent (OWASP LLM01).")
@@ -171,7 +181,10 @@ def main(argv: list[str] | None = None) -> int:
         merged_hits: list[dict] = []
         for file in args.files:
             try:
-                raw = Path(file).read_text(encoding="utf-8")
+                # errors="replace": undecodable bytes must not abort the
+                # scan — injection text around them is still inspected
+                raw = Path(file).read_text(encoding="utf-8",
+                                           errors="replace")
             except OSError as exc:
                 print(f"[ERROR   ] {file}: {exc}", file=sys.stderr)
                 continue
