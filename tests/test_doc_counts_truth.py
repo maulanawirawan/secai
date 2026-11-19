@@ -40,6 +40,8 @@ PATTERNS: list[tuple[str, str]] = [
     (r"\b(\d+) offline triage tools", "tools"),
     (r"\b(\d+) scripts\b", "scripts"),
     (r"\b(\d+) standalone", "skills"),
+    (r"\b(\d+) registered skills\b", "skills"),
+    (r"\b(\d+) tools in\b", "tools"),
     (r"list the (\d+) skills", "skills"),
     (r"\b(\d+) skills de\b", "skills"),
     (r"\b(\d+) herramientas offline", "tools"),

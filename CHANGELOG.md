@@ -7,6 +7,42 @@ as the compatibility signal.
 
 ## [Unreleased]
 
+### Added — wave-12 exploit-lab tier (2 skills + 1 tool + 4 playbooks, 111 -> 113 skills / 226 -> 227 tools)
+
+- `core/lab_gate.py` — the exploit-lab gate, checked before the first
+  request: env `LAB=1` exactly; loopback targets only (literal
+  127.0.0.0/8, ::1, localhost — no DNS resolution); a non-loopback
+  target needs `LAB_REMOTE_ACK=<written reason>`, recorded in the output.
+  No flag can open it. Refusal = exit 2. An addition to the existing
+  gates and NEVER-LIST, which are unchanged.
+- `skills/jwt_lab.py` (exploit-lab) — live JWT forgery differential:
+  alg:none, RS256->HS256 key confusion (`--pubkey`), `kid` path
+  traversal. L3 only when a forgery is accepted twice while a no-token
+  baseline and a random-key control are rejected; <= 20 GET.
+- `skills/ssrf_metadata_lab.py` (exploit-lab) — SSRF -> instance
+  metadata (IMDSv1) proof; closed-port control + honeypot guard; stops at
+  the IAM role name and never requests the credentials document; IMDSv2
+  recognised as hardening; <= 4 GET.
+- `tools/container_escape_check.py` (read-only) — runtime escape
+  preconditions from `/proc` evidence (privileged cap set, dangerous
+  caps, seccomp off, runtime socket / host root / sensitive host paths
+  mounted, writable /proc/sys, cgroup v1 + CAP_SYS_ADMIN, host PID ns).
+- Playbooks: `docs/ESCALATION-LINUX.md`, `docs/ESCALATION-WINDOWS.md`,
+  `docs/ESCALATION-CLOUD.md`, `docs/AUTH-ATTACK-CHAINS.md` — patterns,
+  detection commands mapped to existing secai tools, lab gate per step,
+  no weaponised code (a test enforces referenced scripts/fixtures/
+  playbook names exist).
+- Fixtures under `tests/fixtures/exploit_lab/` (loopback JWT verifier,
+  SSRF app + fake IMDS v1/v2, container /proc snapshots incl. a hardened
+  FP-control). `tests/test_exploit_lab_tier.py`: gate refusal with zero
+  requests sent, proofs, FP-controls, minimal-proof guarantees.
+- Registry +2 (`tier: exploit-lab`, `lab_only`, never tier0 — verified
+  with `secai scan --dry-run`), STRATEGI +2 (F). Not built, with reasons:
+  deserialization / path traversal (already engine playbooks), SQLi UNION
+  extraction (extraction stays on HOLD), IDOR chain (existing playbooks +
+  chain_planner).
+- pytest 3759 -> 3794 passed (114 -> 178 subtests); Rust 68.
+
 ### Fixed — wave-12 reliability pass (no count change: 226 tools / 111 skills)
 
 Found by automated sweeps over all 340 tool/skill CLIs (cp1252 console,

@@ -120,6 +120,9 @@ STRATEGI = {
     "xxe-probe-check": ("D", "differensial benign-vs-entity reproducible; ekstraksi data = jalur exploit-tier"),
     "ldap-probe-check": ("A", "sudah differensial (benign vs wildcard); ekstraksi atribut = uji bertahap berizin"),
     "upload-surface-check": ("-", "inventori read-only; verifikasi upload = jalur exploit-tier/lab"),
+    # --- wave-12 exploit-lab tier (env LAB=1 gate, L3 poc-exploit) -----
+    "jwt-lab": ("F", "lab proof: forged token accepted 2x while no-token baseline + random-key control rejected; FP-control strict/public/any-token routes"),
+    "ssrf-metadata-lab": ("F", "lab proof: IMDS listing 2x absent from closed-port control (honeypot guard); stops at role name, never fetches credentials"),
     "litellm-posture": ("E", "versi -> KB/KEV (sudah jalan)"),
     "ollama-posture": ("E", "versi -> KB Probllama (sudah jalan)"),
     "vllm-posture": ("E", "marker metrik vllm:* = signature kuat; versi -> KB bila ada entri"),

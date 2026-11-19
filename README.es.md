@@ -11,9 +11,9 @@ salida estricto que ambos respetan.
 *Sin prueba, no hay informe.*
 
 [![CI](https://github.com/maulanawirawan/secai/actions/workflows/ci.yml/badge.svg)](https://github.com/maulanawirawan/secai/actions/workflows/ci.yml)
-[![tests](https://img.shields.io/badge/tools-226-brightgreen)](#qué-incluye)
+[![tests](https://img.shields.io/badge/tools-227-brightgreen)](#qué-incluye)
 [![release](https://img.shields.io/badge/release-v0.1.0-blue)](https://github.com/maulanawirawan/secai/releases)
-[![skills](https://img.shields.io/badge/capabilities-337-8A2BE2)](#qué-incluye)
+[![skills](https://img.shields.io/badge/capabilities-340-8A2BE2)](#qué-incluye)
 [![coverage](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/maulanawirawan/secai/gh-pages/coverage-badge.json)](https://github.com/maulanawirawan/secai/actions/workflows/ci.yml)
 [![python](https://img.shields.io/badge/python-3.10%2B-3776AB)](#inicio-rápido)
 [![rust](https://img.shields.io/badge/rust-stable-orange)](#inicio-rápido)
@@ -140,12 +140,12 @@ flowchart LR
 
 ## Qué incluye
 
-- **337 scripts de capacidades** en dos familias: **111 skills de
+- **340 scripts de capacidades** en dos familias: **113 skills de
   detección registradas** en `skills/` (recon, postura y exposición —
   cada una es una CLI independiente con clase de seguridad declarada,
   de `read-only` a `state-changing`, y un límite estricto de
   peticiones derivado de ella; el registro es una lista blanca: lo que
-  no está listado no se ejecuta) y **226 herramientas offline** en
+  no está listado no se ejecuta) y **227 herramientas offline** en
   `tools/` (triage de evidencia — 121 portadas de 995 conceptos).
 - **Un núcleo nativo en Rust** en `core-rs/`: `secai validate` revisa
   el contrato, `secai scan` ejecuta escaneos por niveles y genera el
@@ -270,7 +270,7 @@ La parte aburrida, que también es la importante.
 ```
 core/findings.py   el contrato, lado Python
 core-rs/           núcleo nativo: contrato, orquestador, FAO, serve
-skills/            111 skills de detección + registry.json (lista blanca)
+skills/            113 skills de detección + registry.json (lista blanca)
 tools/             planificador, mapa de código, ejecuciones nocturnas,
                    sync de intel, informe PDF, servidor MCP,
                    nivel de prueba bloqueado, objetivo de laboratorio

@@ -8,8 +8,8 @@
 
 [![CI](https://github.com/maulanawirawan/secai/actions/workflows/ci.yml/badge.svg)](https://github.com/maulanawirawan/secai/actions/workflows/ci.yml)
 [![release](https://img.shields.io/badge/release-v0.1.0-blue)](https://github.com/maulanawirawan/secai/releases)
-[![skills](https://img.shields.io/badge/skills-111-8A2BE2)](#whats-inside)
-[![tools](https://img.shields.io/badge/tools-226-brightgreen)](#whats-inside)
+[![skills](https://img.shields.io/badge/skills-113-8A2BE2)](#whats-inside)
+[![tools](https://img.shields.io/badge/tools-227-brightgreen)](#whats-inside)
 [![coverage](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/maulanawirawan/secai/gh-pages/coverage-badge.json)](https://github.com/maulanawirawan/secai/actions/workflows/ci.yml)
 [![python](https://img.shields.io/badge/python-3.10%2B-3776AB)](#quick-start-try-it-in-60-seconds)
 [![rust](https://img.shields.io/badge/rust-stable-orange)](#quick-start-try-it-in-60-seconds)
@@ -55,8 +55,8 @@ flowchart LR
 ```
 
 > **secai** = **sec**urity + **a**gentic **i**ntelligence. It's an
-> evidence-first cybersecurity engine: **111 detection skills** and
-> **226 offline triage tools** (337 scripts in all), a native Rust core,
+> evidence-first cybersecurity engine: **113 detection skills** and
+> **227 offline triage tools** (340 scripts in all), a native Rust core,
 > one strict "findings" format, and an MCP server — so Claude Code,
 > Cursor, or any shell-capable AI agent can drive it for you.
 
@@ -200,12 +200,12 @@ manual that teaches an agent to drive secai safely) and [AGENTS.md](AGENTS.md)
 
 ## What's inside
 
-- **111 registered detection skills** in `skills/` — recon, posture, and
+- **113 registered detection skills** in `skills/` — recon, posture, and
   exposure checks. Each is a standalone command-line program with a
   declared safety class (from `read-only` up to `state-changing`) and a
   hard request budget. The registry is an *allowlist*: if a skill isn't
   listed, it doesn't run.
-- **226 offline triage tools** in `tools/` — evidence in (logs, exports,
+- **227 offline triage tools** in `tools/` — evidence in (logs, exports,
   manifests, binaries), deterministic `findings.json` out, zero network.
   121 of them were ported from 995 public skill concepts, each rebuilt
   from scratch with attribution.
@@ -229,7 +229,7 @@ manual that teaches an agent to drive secai safely) and [AGENTS.md](AGENTS.md)
   mass exfiltration) are refused no matter what flags you pass. Details in
   [docs/EXPLOIT-TIER.md](docs/EXPLOIT-TIER.md).
 
-*(337 scripts in total: 111 registered skills in `skills/` + 226 tools in
+*(340 scripts in total: 113 registered skills in `skills/` + 227 tools in
 `tools/`. A few extra `.py` files are shared helper modules, not entry
 points; a skill that runs in two modes has two registry entries.)*
 
@@ -277,7 +277,7 @@ distilled from non-tool-shaped concepts (250+ sections) lives in
 | `secai scan --domain example.com --max-requests 32 --report` | Full tier0 scan (public data only, strict budget) + PDF report |
 | `secai validate findings.json` | Check any `findings.json` against the contract (Rust core) |
 | `secai merge --dedup-id ...` | Merge + dedup finding sets (cross-tool correlation) |
-| `python skills/<skill>.py --url … --out f.json` | Run one of the 111 registered detection skills (allowlist-gated) |
+| `python skills/<skill>.py --url … --out f.json` | Run one of the 113 registered detection skills (allowlist-gated) |
 | `secai run --net-budget 8 --net-scope scope.json --out f.json <skill…>` | Run one skill under net-guard: request budget + scope default-deny + IP-pinned connect (anti-DNS-rebinding) |
 | `python tools/code_map.py --repo <path> --out surface.json` | Map a codebase to an attack surface — zero requests |
 | `python tools/chain_planner.py --findings f.json` | Plan A→B→C exploit chains from existing findings |

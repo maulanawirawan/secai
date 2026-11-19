@@ -1749,6 +1749,44 @@
    "needs": "target",
    "desc": "upload-surface-check — inventori read-only permukaan upload (form multipart + input file + accept filter) — NOL upload; pengujian upload = jalur exploit-tier/lab",
    "requires_evidence": false
+  },
+  {
+   "name": "jwt-lab",
+   "cmd": [
+    "python",
+    "skills/jwt_lab.py",
+    "--url",
+    "@TARGET@",
+    "--out",
+    "@OUT@"
+   ],
+   "safety_class": "active-probe",
+   "needs": "target",
+   "desc": "jwt-lab — EXPLOIT-LAB: live JWT forgery differential (alg:none, RS256->HS256 key confusion via --pubkey, kid path traversal); baseline no-token + random-key control must be rejected; forgery accepted twice = L3 poc-exploit; <=20 GET, no state change; env LAB=1 required (non-loopback also LAB_REMOTE_ACK)",
+   "requires_evidence": false,
+   "lab_only": true,
+   "tier": "exploit-lab",
+   "est_requests": 20
+  },
+  {
+   "name": "ssrf-metadata-lab",
+   "cmd": [
+    "python",
+    "skills/ssrf_metadata_lab.py",
+    "--url",
+    "@TARGET@",
+    "--param",
+    "url",
+    "--out",
+    "@OUT@"
+   ],
+   "safety_class": "active-probe",
+   "needs": "target",
+   "desc": "ssrf-metadata-lab — EXPLOIT-LAB: SSRF -> cloud metadata (IMDSv1) escalation proof; closed-port control + 2x metadata listing + IAM role NAME only (credentials document never requested); IMDSv2 recognised as hardening; <=4 GET; env LAB=1 required (non-loopback also LAB_REMOTE_ACK)",
+   "requires_evidence": false,
+   "lab_only": true,
+   "tier": "exploit-lab",
+   "est_requests": 4
   }
  ]
 }
