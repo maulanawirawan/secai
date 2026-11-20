@@ -58,7 +58,7 @@ def load_programs(path: Path, only: list[str] | None) -> list[dict]:
     return out
 
 
-def main() -> int:
+def main(argv: "list[str] | None" = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--programs", default="programs/index.json")
     ap.add_argument("--only", default=None,
@@ -70,17 +70,24 @@ def main() -> int:
     ap.add_argument("--no-knowledge", action="store_true",
                     help="lewati lapisan pengetahuan (cve-matcher KEV + "
                          "audit CWE) — default ON, NOL request")
-    args = ap.parse_args()
+    args = ap.parse_args(argv)
 
     date_str = time.strftime("%Y-%m-%d")
     out_root = Path(args.out) if args.out else Path("findings/reports") / date_str
-    out_root.mkdir(parents=True, exist_ok=True)
-    progs = load_programs(Path(args.programs),
-                          [d.strip() for d in args.only.split(",")]
-                          if args.only else None)
+    try:
+        progs = load_programs(Path(args.programs),
+                              [d.strip() for d in args.only.split(",")]
+                              if args.only else None)
+    except (OSError, ValueError, AttributeError) as exc:
+        print(f"--programs tidak terbaca/bukan JSON program: {exc} "
+              "(fail-closed)", file=sys.stderr)
+        return 2
     if not progs:
         print("tidak ada program yang lolos filter — selesai", file=sys.stderr)
         return 2
+    # output folder only once the input is valid: a refused run leaves no
+    # stray findings/reports/<date> directory behind
+    out_root.mkdir(parents=True, exist_ok=True)
 
     # 1) preflight egress dulu — kesehatan jalur keluar adalah konteks
     #    wajib sebelum klaim apa pun ditulis

@@ -7,6 +7,16 @@ as the compatibility signal.
 
 ## [Unreleased]
 
+### Fixed — wave-12 follow-up: order-dependent test failure (no count change)
+
+- A reversed-file-order run failed `test_f37_ops::test_empty_selection_exit`:
+  `test_fp_regression` leaked `sys.argv`. `tests/conftest.py` now restores
+  `sys.argv` around every test; `tools/report_pack.py` takes `argv`, exits 2
+  on an unreadable programs file and no longer creates
+  `findings/reports/<date>` before its input is valid. Locked by
+  `tests/test_suite_isolation.py`; details and the remaining open items in
+  `docs/KNOWN-ISSUES.md`. pytest 3806 passed (normal and reversed order).
+
 ### Changed — wave-12 distribution: docs that run (no count change)
 
 - `docs/GROWTH-RESEARCH.md` — what 19 widely adopted security
