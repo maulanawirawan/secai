@@ -7,6 +7,30 @@ as the compatibility signal.
 
 ## [Unreleased]
 
+### Changed — wave-12 distribution: docs that run (no count change)
+
+- `docs/GROWTH-RESEARCH.md` — what 19 widely adopted security
+  repositories (scanners, exploitation, knowledge bases, secrets, SAST,
+  AI security, CMS) have in common, measured from their public metadata,
+  READMEs and release feeds (sources and limits stated), with a ranked
+  top-10 and what secai applied or skipped.
+- README (en/es/zh): "what makes it different" table, a working
+  quickstart with its real output, audiences incl. blue team and lab red
+  team, a Playbooks section; stale sentences left by the reference
+  removal repaired; roadmap gains packaged installs / docs site / demo.
+- `docs/QUICKSTART.md` — four runnable examples (evidence ladder, no
+  evidence → no claim, offline triage, lab-gated proof) + Docker path.
+- `tests/test_quickstart_docs.py` executes every `<!-- example -->` block
+  in the three READMEs and QUICKSTART exactly as written (ports
+  rewritten to ephemeral fixtures, outputs in a temp dir).
+- `CONTRIBUTING.md` rewritten for outside contributors: the four skill
+  contracts, the tool contract, count bookkeeping, shield re-pin by
+  maintainers.
+- `docs/RELEASE-NOTES-v0.2.0.md` — release draft since v0.1.0 (not
+  tagged: tagging is left to the maintainer).
+- `secai.py validate` fallback prints one summary line per findings file;
+  the JWT fixture can run standalone for the docs demo.
+
 ### Added — wave-12 exploit-lab tier (2 skills + 1 tool + 4 playbooks, 111 -> 113 skills / 226 -> 227 tools)
 
 - `core/lab_gate.py` — the exploit-lab gate, checked before the first

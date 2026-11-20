@@ -176,12 +176,21 @@ def validate_python_fallback(args: list[str]) -> int:
         # finding object or a list of findings is also accepted.
         if isinstance(document, dict) and isinstance(
                 document.get("findings"), list):
-            items = document["findings"]
-            if not items:
-                print(f"[OK      ] {path}: 0 findings")
-                continue
-        else:
-            items = document if isinstance(document, list) else [document]
+            # one summary line per file, like core-rs; only the invalid
+            # rows are listed individually
+            rows_bad = 0
+            for i, finding in enumerate(document["findings"]):
+                errors = validate_finding(finding)
+                if errors:
+                    rows_bad += 1
+                    print(f"[INVALID ] {path}[{i}]: {'; '.join(errors)}",
+                          file=sys.stderr)
+            bad += rows_bad
+            if not rows_bad:
+                print(f"[OK      ] {path}: {len(document['findings'])} "
+                      "findings valid against the contract")
+            continue
+        items = document if isinstance(document, list) else [document]
         for i, finding in enumerate(items):
             errors = validate_finding(finding)
             label = path if len(items) == 1 else f"{path}[{i}]"

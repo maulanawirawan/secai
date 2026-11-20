@@ -60,55 +60,69 @@ flowchart LR
 > one strict "findings" format, and an MCP server — so Claude Code,
 > Cursor, or any shell-capable AI agent can drive it for you.
 
+## What makes it different
+
+| | Typical scanner | secai |
+|---|---|---|
+| Unproven hits | reported as findings | kept as `L1` leads, `reportable: false` |
+| Missing / broken evidence | often reported anyway | **no evidence, no claim** — exit 2 (test-enforced for every evidence-only skill) |
+| Network | needs the target for everything | 227 offline tools: evidence in, verdict out, zero network |
+| Repeatability | varies per run | deterministic output + one strict `findings.json` contract (Python and Rust, cross-tested) |
+| Active / exploit checks | a flag away | lab-gated: tier0 never runs them; exploit-lab needs `LAB=1`, loopback or a written ack |
+| AI agents | bolt-on | built for them: MCP server, `SKILL.md`, `AGENTS.md`, injection guard |
+| Docs | drift | quickstart and counts are executed / checked by the test suite |
+
 ---
 
 ## Quick start — try it in 60 seconds
 
 No target of your own? No problem. secai ships with a **local practice
-site** so you can see it work safely, right now:
+site** (binds `127.0.0.1` only) so you can see it work safely, right now.
+Python 3.10+, standard library only:
 
 ```bash
 git clone https://github.com/maulanawirawan/secai && cd secai
-
-# 1. start the local practice target (safe, runs on your own machine)
-python tools/lab_target.py
-
-# 2. in another terminal, run one detection skill against it
-python skills/http_security_headers.py \
-    --url http://127.0.0.1:8777/api/products --out headers.json
-
-# 3. see the result — every line carries its own verdict
-python secai.py validate headers.json
+python tools/lab_target.py          # terminal 1: practice target on 127.0.0.1:8777
 ```
 
-That's it. No API keys, no account, no cloud. Want the full scan engine
-and PDF reports? Build the native core (one command) — see
-[Quick start: the full engine](#quick-start-the-full-engine) below.
+<!-- example:readme-quickstart -->
+```bash
+python skills/banner_posture.py --url http://127.0.0.1:8777/ --save-raw evidence.html --out banner.json
+python skills/http_security_headers.py --url http://127.0.0.1:8777/ --from-raw evidence.html --out headers.json   # expect: 8 temuan (2 AMAN) (0 request)
+python secai.py validate headers.json   # expect: 8 findings valid
+```
+<!-- /example -->
 
-> **Heads up on language:** the tools currently print their status in
-> Indonesian — `temuan` = findings, `AMAN` = clear/safe, `request` =
-> requests. An English-output mode is on the [roadmap](#roadmap). Until
-> then, this glossary is all you need to read the output.
+One request collects the evidence, the second skill judges it with
+**zero** requests, and the validator checks the result against the
+contract. No API keys, no account, no cloud. These three lines are
+executed by the test suite on every push, so they keep working.
+[docs/QUICKSTART.md](docs/QUICKSTART.md) has three more runnable
+examples: *no evidence, no claim*, offline triage, and a lab-gated proof.
+
+> **Heads up on language:** status lines are partly Indonesian —
+> `temuan` = findings, `AMAN` = clear/safe, `bukti` = evidence. An
+> English-output mode is on the [roadmap](#roadmap).
 
 ---
 
 ## See it think
 
-Point a skill at the practice target and watch the *verdicts*, not just a
-pile of "findings." This is real output, copied verbatim:
+This is real output, copied verbatim:
 
 ```console
 $ python tools/lab_target.py
-lab target aktif: http://127.0.0.1:8777     # "lab target active"
+lab target aktif: http://127.0.0.1:8777          # "lab target active"
 
-$ python skills/http_security_headers.py \
-    --url http://127.0.0.1:8777/api/products --from-raw raw.txt \
-    --out headers.json
+$ python skills/banner_posture.py --url http://127.0.0.1:8777/ --save-raw evidence.html --out banner.json
+banner-posture: 1 temuan (0 AMAN) (1 request) -> banner.json
+
+$ python skills/http_security_headers.py --url http://127.0.0.1:8777/ --from-raw evidence.html --out headers.json
 http-security-headers: 8 temuan (2 AMAN) (0 request) -> headers.json
 #                        ^8 findings  ^2 clear  ^0 requests sent
 
-$ secai validate headers.json
-OK: 8 findings valid terhadap kontrak (headers.json)   # "valid against the contract"
+$ python secai.py validate headers.json
+[OK      ] headers.json: 8 findings valid against the contract
 ```
 
 Now look at what's actually inside `headers.json` — every row carries its
@@ -178,9 +192,33 @@ people learning it. Typical uses:
   [`docs/AWARENESS-PATTERNS.md`](docs/AWARENESS-PATTERNS.md) (nine
   real-world vulnerability patterns traced end-to-end from official code
   fixes) make it a hands-on classroom.
+- **Blue teams & DFIR** — 227 offline tools turn the artefacts you
+  already have (event logs, Sysmon, CloudTrail, IAM exports, k8s
+  manifests, `/proc` snapshots, mail, binaries) into deterministic
+  findings without sending a packet.
+- **Red teams in a lab** — the exploit-lab tier proves classes like JWT
+  forgery and SSRF → cloud metadata against your own lab, behind an env
+  gate, and the escalation playbooks map each technique to its detection
+  command and hardening.
 
 One rule, no exceptions: **authorized targets only** — your own systems,
 or programs that clearly give you permission.
+
+## Playbooks
+
+Knowledge you can read without running anything — each technique has
+preconditions, a detection command mapped to a secai tool, the
+escalation idea, hardening, and its lab gate. Patterns only, no
+weaponised code.
+
+| Playbook | Covers |
+|---|---|
+| [ESCALATION-LINUX](docs/ESCALATION-LINUX.md) | sudo, SUID/SGID, capabilities, cron/systemd, PATH, root-equivalent groups, NFS, container boundary |
+| [ESCALATION-WINDOWS](docs/ESCALATION-WINDOWS.md) | token privileges, unquoted/weak services, AlwaysInstallElevated, stored credentials, UAC, patch level |
+| [ESCALATION-CLOUD](docs/ESCALATION-CLOUD.md) | IAM policy confusion, role-trust chains, SSRF → metadata, Kubernetes RBAC, abuse evidence |
+| [AUTH-ATTACK-CHAINS](docs/AUTH-ATTACK-CHAINS.md) | JWT classes, OAuth/OIDC misuse, session flaws, SAML wrapping, lockout economics |
+| [HUNT-ACTIVE-CLASSES](docs/HUNT-ACTIVE-CLASSES.md) | file upload, race conditions, MFA/ATO, business logic — agent playbook |
+| [EXPLOIT-TIER](docs/EXPLOIT-TIER.md) | the proof tier's gates, aggression ladder and NEVER-LIST |
 
 ## Use it from your AI agent
 
@@ -208,7 +246,7 @@ manual that teaches an agent to drive secai safely) and [AGENTS.md](AGENTS.md)
 - **227 offline triage tools** in `tools/` — evidence in (logs, exports,
   manifests, binaries), deterministic `findings.json` out, zero network.
   121 of them were ported from 995 public skill concepts, each rebuilt
-  from scratch with attribution.
+  from scratch.
 - **A native Rust core** in `core-rs/` — `secai validate` checks the
   contract, `secai scan` runs tiered scans and renders the PDF report, and
   it handles cross-tool correlation (dedup, quorum, evidence hashes) with
@@ -239,12 +277,10 @@ The triage family is a set of standalone offline tools: evidence in,
 deterministic `findings.json` out, fail-closed, zero network. Highlights
 by domain:
 
-(quoted as *concept* references only; every implementation here is written
-from scratch, stdlib-only, and documented with its source entry in the
-module docstring).
+(every implementation here is written from scratch, stdlib-only).
 
 <details>
-<summary><b>121 ported tools + 13 offensive/blue-bridge + 7 intel-DFIR + 4 capture/document-bait tools (200 total in tools/) — click to expand</b></summary>
+<summary><b>Highlights from the 227 tools in <code>tools/</code> — click to expand</b></summary>
 <br>
 
 | Domain | Answers the question… | Examples |
@@ -267,8 +303,7 @@ module docstring).
 
 **See a real output shape:** [assets/sample-findings/banner_posture.json](assets/sample-findings/banner_posture.json) — generated by running `banner_posture` against the built-in lab target (`secai lab`), host redacted. One request, four L1 leads (absent security headers) — exactly what `secai validate` then checks against the contract.
 
-The full index lives in [CHANGELOG.md](CHANGELOG.md); the methodology
-distilled from non-tool-shaped concepts (250+ sections) lives in
+The full index lives in [CHANGELOG.md](CHANGELOG.md).
 
 ## Commands
 
@@ -283,7 +318,10 @@ distilled from non-tool-shaped concepts (250+ sections) lives in
 | `python tools/chain_planner.py --findings f.json` | Plan A→B→C exploit chains from existing findings |
 | `python tools/submission_gate.py --finding f.json --program p.json` | 7-question pre-submission gate for a finding |
 | `claude mcp add secai -- python tools/mcp_server.py` | Drive secai from Claude Code / any MCP client |
-| `python tools/lab_target.py` | Start a local practice target |
+| `python tools/lab_target.py` | Start a local practice target (`--port`, default 8777) |
+| `LAB=1 python skills/jwt_lab.py --url <lab endpoint>` | Exploit-lab: prove JWT forgery classes in your lab (refuses without `LAB=1`) |
+| `LAB=1 python skills/ssrf_metadata_lab.py --url <lab fetch endpoint>` | Exploit-lab: prove SSRF → instance metadata (stops at the role name) |
+| `python tools/container_escape_check.py --root <snapshot>` | Container escape preconditions from `/proc` evidence — zero network |
 
 ## Quick start: the full engine
 
@@ -400,9 +438,8 @@ contributors list.
   mini-program (`scope_gate`, `chain_planner`, `solidity_static_audit`,
   `hunt_pattern_db`, and friends).
 - The 995-concept skill-port program drew on four public security-skill
-  collections (trailofbits/skills, SnailSploit/Claude-Red,
-  ported tool is built from scratch with concept attribution in its
-  docstring.
+  collections (trailofbits/skills, SnailSploit/Claude-Red, and others) —
+  every ported tool is built from scratch.
 
 Third-party components and data sources are credited in
 [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
@@ -421,6 +458,10 @@ Third-party components and data sources are credited in
       programs without reading JSON
 - [ ] **More platform report formats** — YesWeHack, Synack on top of the
       current HackerOne / Bugcrowd / Intigriti drafts
+- [ ] **Packaged installs** — `pipx install` / Homebrew / a published
+      container image (today: `git clone`, or `docker build` — CI-tested)
+- [ ] **Docs site** — the playbooks and quickstart as a browsable site
+- [ ] **Recorded demo** — a short terminal cast of the quickstart
 
 ## License
 

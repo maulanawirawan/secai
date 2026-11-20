@@ -272,7 +272,8 @@ class QuickstartTruthTest(unittest.TestCase):
             with redirect_stdout(out), redirect_stderr(err):
                 code = secai.validate_python_fallback([str(good)])
             self.assertEqual(code, 0, err.getvalue())
-            self.assertEqual(out.getvalue().count("[OK"), 2)
+            self.assertEqual(out.getvalue().count("[OK"), 1)
+            self.assertIn("2 findings valid", out.getvalue())
 
             bad = Path(td) / "bad.json"
             bad.write_text(json.dumps({"ok": True, "findings": [

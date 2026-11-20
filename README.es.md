@@ -25,6 +25,43 @@ salida estricto que ambos respetan.
 
 ---
 
+## Qué lo hace distinto
+
+| | Escáner típico | secai |
+|---|---|---|
+| Hallazgos sin probar | se reportan | quedan como pistas `L1`, `reportable: false` |
+| Evidencia ausente o rota | a menudo se reporta igual | **sin evidencia, no hay afirmación** — exit 2 (verificado por tests en cada skill de evidencia) |
+| Red | necesita el objetivo para todo | 227 herramientas offline: evidencia entra, veredicto sale, cero red |
+| Repetibilidad | varía entre ejecuciones | salida determinista + un contrato `findings.json` estricto (Python y Rust, probados entre sí) |
+| Pruebas activas / exploit | a un flag de distancia | con compuertas: tier0 nunca las ejecuta; exploit-lab exige `LAB=1`, loopback o un acuse escrito |
+| Agentes de IA | añadido | pensado para ellos: servidor MCP, `SKILL.md`, `AGENTS.md`, guardia anti-inyección |
+| Documentación | se desactualiza | el inicio rápido y los conteos se ejecutan / verifican en la suite de tests |
+
+## Inicio en 60 segundos
+
+Sin objetivo propio no hay problema: secai trae un **sitio de práctica
+local** (solo escucha en `127.0.0.1`). Python 3.10+, solo biblioteca
+estándar:
+
+```bash
+git clone https://github.com/maulanawirawan/secai && cd secai
+python tools/lab_target.py          # terminal 1: objetivo de práctica en 127.0.0.1:8777
+```
+
+<!-- example:readme-quickstart -->
+```bash
+python skills/banner_posture.py --url http://127.0.0.1:8777/ --save-raw evidence.html --out banner.json
+python skills/http_security_headers.py --url http://127.0.0.1:8777/ --from-raw evidence.html --out headers.json   # expect: 8 temuan (2 AMAN) (0 request)
+python secai.py validate headers.json   # expect: 8 findings valid
+```
+<!-- /example -->
+
+Una petición recoge la evidencia, la segunda skill la juzga con **cero**
+peticiones y el validador revisa el resultado contra el contrato. La
+suite de tests ejecuta estas tres líneas en cada push. Más ejemplos
+ejecutables (sin evidencia no hay afirmación, triage offline, prueba con
+compuerta de laboratorio): [docs/QUICKSTART.md](docs/QUICKSTART.md).
+
 ## Úsalo desde tu agente
 
 secai viene como un CLI de un solo comando con modos, un skill
@@ -86,13 +123,14 @@ tal cual (las herramientas imprimen en indonesio: `temuan` = hallazgos,
 $ python tools/lab_target.py
 lab target aktif: http://127.0.0.1:8777
 
-$ python skills/http_security_headers.py \
-    --url http://127.0.0.1:8777/api/products --from-raw raw.txt \
-    --out headers.json
+$ python skills/banner_posture.py --url http://127.0.0.1:8777/ --save-raw evidence.html --out banner.json
+banner-posture: 1 temuan (0 AMAN) (1 request) -> banner.json
+
+$ python skills/http_security_headers.py --url http://127.0.0.1:8777/ --from-raw evidence.html --out headers.json
 http-security-headers: 8 temuan (2 AMAN) (0 request) -> headers.json
 
-$ secai validate headers.json
-OK: 8 findings valid terhadap kontrak (headers.json)
+$ python secai.py validate headers.json
+[OK      ] headers.json: 8 findings valid against the contract
 ```
 
 Ahora mira qué hay de verdad en `headers.json`: cada fila lleva su

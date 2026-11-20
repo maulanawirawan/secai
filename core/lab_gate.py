@@ -52,7 +52,7 @@ def evaluate(target_url: str, env: "dict | None" = None) -> dict:
     env = os.environ if env is None else env
     if env.get("LAB") != "1":
         raise LabGateError(
-            "exploit-lab script: LAB=1 is not set — refusing (lab-only "
+            "exploit-lab script: LAB=1 is not set - refusing (lab-only "
             "tier, fail-closed). Run only against your own lab target.")
     try:
         parts = urlsplit(target_url)
@@ -70,7 +70,7 @@ def evaluate(target_url: str, env: "dict | None" = None) -> dict:
         raise LabGateError(
             f"target host {host!r} is not loopback. Non-loopback lab "
             "targets need LAB_REMOTE_ACK=<written reason, e.g. 'own "
-            "staging, approval ticket SEC-142'> — refusing.")
+            "staging, approval ticket SEC-142'> - refusing.")
     return {"lab_gate": "remote-acknowledged", "target_host": host,
             "remote_ack": ack[:300]}
 

@@ -24,6 +24,40 @@ Rust，两边遵守同一份严格的输出契约。
 
 ---
 
+## 有什么不同
+
+| | 常见扫描器 | secai |
+|---|---|---|
+| 未证明的命中 | 当作发现报告 | 保留为 `L1` 线索，`reportable: false` |
+| 证据缺失或损坏 | 往往照样报告 | **无证据，不下结论** —— exit 2（每个依赖证据的技能都有测试保证） |
+| 网络 | 一切都要访问目标 | 227 个离线工具：证据进，判定出，零网络 |
+| 可重复性 | 每次运行可能不同 | 确定性输出 + 一份严格的 `findings.json` 契约（Python 与 Rust 互相校验） |
+| 主动 / 利用类检查 | 一个开关就打开 | 有门控：tier0 永不运行；exploit-lab 需要 `LAB=1`、回环地址或书面确认 |
+| AI agent | 事后附加 | 为其而生：MCP 服务器、`SKILL.md`、`AGENTS.md`、注入防护 |
+| 文档 | 容易过时 | 快速开始与各项数量由测试套件实际执行 / 校验 |
+
+## 60 秒上手
+
+没有自己的目标也没关系：secai 自带一个**本地练习站点**（只监听
+`127.0.0.1`）。Python 3.10+，仅标准库：
+
+```bash
+git clone https://github.com/maulanawirawan/secai && cd secai
+python tools/lab_target.py          # 终端 1：练习目标 127.0.0.1:8777
+```
+
+<!-- example:readme-quickstart -->
+```bash
+python skills/banner_posture.py --url http://127.0.0.1:8777/ --save-raw evidence.html --out banner.json
+python skills/http_security_headers.py --url http://127.0.0.1:8777/ --from-raw evidence.html --out headers.json   # expect: 8 temuan (2 AMAN) (0 request)
+python secai.py validate headers.json   # expect: 8 findings valid
+```
+<!-- /example -->
+
+一次请求采集证据，第二个技能以**零**请求判定证据，校验器再按契约检查
+结果。测试套件在每次推送时都会执行这三行。更多可运行示例（无证据不下
+结论、离线分诊、实验室门控下的证明）：[docs/QUICKSTART.md](docs/QUICKSTART.md)。
+
 ## 从你的 Agent 使用
 
 secai 既是单命令多模式的 CLI，也提供可加载的 agent skill 与 MCP
@@ -76,13 +110,14 @@ secai 是面向真实安全工作的公开开源项目。典型用法：
 $ python tools/lab_target.py
 lab target aktif: http://127.0.0.1:8777
 
-$ python skills/http_security_headers.py \
-    --url http://127.0.0.1:8777/api/products --from-raw raw.txt \
-    --out headers.json
+$ python skills/banner_posture.py --url http://127.0.0.1:8777/ --save-raw evidence.html --out banner.json
+banner-posture: 1 temuan (0 AMAN) (1 request) -> banner.json
+
+$ python skills/http_security_headers.py --url http://127.0.0.1:8777/ --from-raw evidence.html --out headers.json
 http-security-headers: 8 temuan (2 AMAN) (0 request) -> headers.json
 
-$ secai validate headers.json
-OK: 8 findings valid terhadap kontrak (headers.json)
+$ python secai.py validate headers.json
+[OK      ] headers.json: 8 findings valid against the contract
 ```
 
 再看看 `headers.json` 里到底是什么——每一行都带着自己的判定：
