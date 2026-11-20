@@ -1,10 +1,10 @@
 {
   "version": 1,
-  "pinned_at": "2026-11-20T16:49:26Z",
+  "pinned_at": "2026-11-20T17:46:12Z",
   "algorithm": "sha256",
   "files": {
     "SKILL.md": "b6acc602cfc768f5ea7ee95f309b5c97f8ce0e9844d73eb4dd1540808147ef3f",
-    "AGENTS.md": "0f1f7ac078d23eb67284da2cf03b6560db2b7872a44e835161f331f03ca32317",
+    "AGENTS.md": "382c4736d51ad55e4a88b0e0a8ad585e37b04d6cf0797618a3dcf26b01dbe4d7",
     ".claude/skills/secai/SKILL.md": "cd9cd8742a57a58f4044bb694023e6091e368935ebdc1ddcc927b49e28f53144",
     "docs/AGENT-SAFETY.md": "5097d0aff2aa805013d283862f2e5eb3991ff763ff23fb949c6a90656d2df12b",
     "docs/LEGION-METHOD.md": "221229bc22cf9e1aa8505344067903ceb1bb615a36b4c41498d35a530965dd76",

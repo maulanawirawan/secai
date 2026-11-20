@@ -1,0 +1,23 @@
+Traceback (most recent call last):
+  File "/app/api.py", line 42, in get_item
+    item_id = int(raw)
+ValueError: invalid literal for int() with base 10: 'abc'
+
+Traceback (most recent call last):
+  File "/app/api.py", line 44, in get_item
+    item_id = int(raw)
+ValueError: invalid literal for int() with base 10: 'abc'
+
+Traceback (most recent call last):
+  File "/app/tree.py", line 10, in walk
+    return walk(node.child)
+  File "/app/tree.py", line 10, in walk
+    return walk(node.child)
+RecursionError: maximum recursion depth exceeded
+
+Traceback (most recent call last):
+  File "/app/ingest.py", line 7, in load
+    return json.loads(body)
+  File "/usr/lib/python3.12/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)

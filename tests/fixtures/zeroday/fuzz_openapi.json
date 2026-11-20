@@ -1,0 +1,215 @@
+{
+ "openapi": "3.0.3",
+ "info": {
+  "title": "secai fuzz fixture",
+  "version": "1"
+ },
+ "paths": {
+  "/items/{item_id}": {
+   "get": {
+    "parameters": [
+     {
+      "name": "item_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "example": 1
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "ok"
+     }
+    }
+   }
+  },
+  "/safe/{item_id}": {
+   "get": {
+    "parameters": [
+     {
+      "name": "item_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "example": 7
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "ok"
+     }
+    }
+   }
+  },
+  "/search": {
+   "get": {
+    "parameters": [
+     {
+      "name": "q",
+      "in": "query",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "ok"
+     }
+    }
+   }
+  },
+  "/greet": {
+   "get": {
+    "parameters": [
+     {
+      "name": "name",
+      "in": "query",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "ok"
+     }
+    }
+   }
+  },
+  "/echo": {
+   "get": {
+    "parameters": [
+     {
+      "name": "msg",
+      "in": "query",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "ok"
+     }
+    }
+   }
+  },
+  "/slow": {
+   "get": {
+    "parameters": [
+     {
+      "name": "pattern",
+      "in": "query",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "ok"
+     }
+    }
+   }
+  },
+  "/crash": {
+   "get": {
+    "parameters": [
+     {
+      "name": "n",
+      "in": "query",
+      "schema": {
+       "type": "integer",
+       "example": 1
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "ok"
+     }
+    }
+   }
+  },
+  "/docs-page": {
+   "get": {
+    "parameters": [
+     {
+      "name": "topic",
+      "in": "query",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "ok"
+     }
+    }
+   }
+  },
+  "/flaky": {
+   "get": {
+    "parameters": [
+     {
+      "name": "x",
+      "in": "query",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "ok"
+     }
+    }
+   }
+  },
+  "/orders": {
+   "post": {
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/Order"
+       }
+      }
+     }
+    },
+    "responses": {
+     "201": {
+      "description": "created"
+     }
+    }
+   }
+  }
+ },
+ "components": {
+  "schemas": {
+   "Order": {
+    "type": "object",
+    "properties": {
+     "qty": {
+      "type": "integer"
+     },
+     "sku": {
+      "type": "string"
+     }
+    }
+   }
+  }
+ }
+}

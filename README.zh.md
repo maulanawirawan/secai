@@ -10,9 +10,9 @@ Rust，两边遵守同一份严格的输出契约。
 *无证据，不报告。*
 
 [![CI](https://github.com/maulanawirawan/secai/actions/workflows/ci.yml/badge.svg)](https://github.com/maulanawirawan/secai/actions/workflows/ci.yml)
-[![tests](https://img.shields.io/badge/tools-227-brightgreen)](#包含什么)
+[![tests](https://img.shields.io/badge/tools-231-brightgreen)](#包含什么)
 [![release](https://img.shields.io/badge/release-v0.1.0-blue)](https://github.com/maulanawirawan/secai/releases)
-[![skills](https://img.shields.io/badge/capabilities-340-8A2BE2)](#包含什么)
+[![skills](https://img.shields.io/badge/capabilities-344-8A2BE2)](#包含什么)
 [![coverage](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/maulanawirawan/secai/gh-pages/coverage-badge.json)](https://github.com/maulanawirawan/secai/actions/workflows/ci.yml)
 [![python](https://img.shields.io/badge/python-3.10%2B-3776AB)](#快速开始)
 [![rust](https://img.shields.io/badge/rust-stable-orange)](#快速开始)
@@ -30,7 +30,7 @@ Rust，两边遵守同一份严格的输出契约。
 |---|---|---|
 | 未证明的命中 | 当作发现报告 | 保留为 `L1` 线索，`reportable: false` |
 | 证据缺失或损坏 | 往往照样报告 | **无证据，不下结论** —— exit 2（每个依赖证据的技能都有测试保证） |
-| 网络 | 一切都要访问目标 | 227 个离线工具：证据进，判定出，零网络 |
+| 网络 | 一切都要访问目标 | 231 个离线工具：证据进，判定出，零网络 |
 | 可重复性 | 每次运行可能不同 | 确定性输出 + 一份严格的 `findings.json` 契约（Python 与 Rust 互相校验） |
 | 主动 / 利用类检查 | 一个开关就打开 | 有门控：tier0 永不运行；exploit-lab 需要 `LAB=1`、回环地址或书面确认 |
 | AI agent | 事后附加 | 为其而生：MCP 服务器、`SKILL.md`、`AGENTS.md`、注入防护 |
@@ -163,10 +163,10 @@ flowchart LR
 
 ## 包含什么
 
-- **340 个能力脚本**，分两族：**113 个注册检测技能**（`skills/`，覆盖
+- **344 个能力脚本**，分两族：**113 个注册检测技能**（`skills/`，覆盖
   侦察、配置态势和暴露面 —— 每个都是独立 CLI，声明安全等级（从
   `read-only` 到 `state-changing`）并据此设定硬性请求上限；注册表是
-  白名单，未登记的技能不会运行）+ **227 个离线工具**（`tools/`，证据
+  白名单，未登记的技能不会运行）+ **231 个离线工具**（`tools/`，证据
   分诊，其中 121 个移植自 995 个技能概念）。
 - **原生 Rust 核心**（`core-rs/`）：`secai validate` 校验契约，
   `secai scan` 执行分级扫描，并生成 PDF 报告。它还负责 FAO 关联
@@ -198,7 +198,7 @@ flowchart LR
 triage 家族是一组独立的离线 CLI：输入证据（日志、导出、清单、二进制），输出确定性的 findings.json，fail-closed，零网络。按领域划分的亮点：
 
 <details>
-<summary><b>121 个移植 + 13 个新攻击/蓝队桥接工具（tools/ 下共 227 个）— 点击展开</b></summary>
+<summary><b>121 个移植 + 13 个新攻击/蓝队桥接工具（tools/ 下共 231 个）— 点击展开</b></summary>
 <br>
 
 | 领域 | 回答的问题… | 示例 |

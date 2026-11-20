@@ -1,0 +1,30 @@
+=================================================================
+==1111==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x6020000000f0 at pc 0x55d4c3a1b2c4 bp 0x7ffd sp 0x7ffd
+WRITE of size 64 at 0x6020000000f0 thread T0
+    #0 0x7f1e2c3d4e5f in __interceptor_memcpy ../../src/libsanitizer/asan/asan_interceptors.cpp:827
+    #1 0x55d4c3a1b2c4 in parse_header /src/proto/parser.c:133:5
+    #2 0x55d4c3a1a111 in handle_packet /src/proto/server.c:88:12
+    #3 0x55d4c3a19000 in main /src/proto/main.c:40:3
+    #4 0x7f1e2c0c0d90 in __libc_start_main
+SUMMARY: AddressSanitizer: heap-buffer-overflow /src/proto/parser.c:133:5 in parse_header
+=================================================================
+==2222==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x6020000001a0 at pc 0x55d4c3a1b2c4 bp 0x7ffd sp 0x7ffd
+WRITE of size 64 at 0x6020000001a0 thread T0
+    #0 0x7f1e2c3d4e5f in __interceptor_memcpy ../../src/libsanitizer/asan/asan_interceptors.cpp:827
+    #1 0x55d4c3a1b2c4 in parse_header /src/proto/parser.c:135:5
+    #2 0x55d4c3a1a111 in handle_packet /src/proto/server.c:88:12
+    #3 0x55d4c3a19000 in main /src/proto/main.c:40:3
+    #4 0x7f1e2c0c0d90 in __libc_start_main
+SUMMARY: AddressSanitizer: heap-buffer-overflow /src/proto/parser.c:135:5 in parse_header
+==4242==ERROR: AddressSanitizer: heap-use-after-free on address 0x602000000010 at pc 0x55 bp 0x7f sp 0x7f
+READ of size 8 at 0x602000000010 thread T0
+    #0 0x55d4c3a1c000 in session_touch /src/proto/session.c:51:10
+    #1 0x55d4c3a1a111 in handle_packet /src/proto/server.c:95:7
+freed by thread T0 here:
+    #0 0x7f1e2c3e0000 in free
+    #1 0x55d4c3a1c100 in session_free /src/proto/session.c:70:3
+==5151==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000008 (pc 0x55 bp 0x7f sp 0x7f T0)
+==5151==The signal is caused by a READ memory access.
+    #0 0x55d4c3a1d000 in config_get /src/proto/config.c:12:20
+    #1 0x55d4c3a19000 in main /src/proto/main.c:22:9
+/src/proto/len.c:31:17: runtime error: signed integer overflow: 2147483647 + 1 cannot be represented in type 'int'

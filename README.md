@@ -9,7 +9,7 @@
 [![CI](https://github.com/maulanawirawan/secai/actions/workflows/ci.yml/badge.svg)](https://github.com/maulanawirawan/secai/actions/workflows/ci.yml)
 [![release](https://img.shields.io/badge/release-v0.1.0-blue)](https://github.com/maulanawirawan/secai/releases)
 [![skills](https://img.shields.io/badge/skills-113-8A2BE2)](#whats-inside)
-[![tools](https://img.shields.io/badge/tools-227-brightgreen)](#whats-inside)
+[![tools](https://img.shields.io/badge/tools-231-brightgreen)](#whats-inside)
 [![coverage](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/maulanawirawan/secai/gh-pages/coverage-badge.json)](https://github.com/maulanawirawan/secai/actions/workflows/ci.yml)
 [![python](https://img.shields.io/badge/python-3.10%2B-3776AB)](#quick-start-try-it-in-60-seconds)
 [![rust](https://img.shields.io/badge/rust-stable-orange)](#quick-start-try-it-in-60-seconds)
@@ -56,7 +56,7 @@ flowchart LR
 
 > **secai** = **sec**urity + **a**gentic **i**ntelligence. It's an
 > evidence-first cybersecurity engine: **113 detection skills** and
-> **227 offline triage tools** (340 scripts in all), a native Rust core,
+> **231 offline triage tools** (344 scripts in all), a native Rust core,
 > one strict "findings" format, and an MCP server — so Claude Code,
 > Cursor, or any shell-capable AI agent can drive it for you.
 
@@ -66,7 +66,7 @@ flowchart LR
 |---|---|---|
 | Unproven hits | reported as findings | kept as `L1` leads, `reportable: false` |
 | Missing / broken evidence | often reported anyway | **no evidence, no claim** — exit 2 (test-enforced for every evidence-only skill) |
-| Network | needs the target for everything | 227 offline tools: evidence in, verdict out, zero network |
+| Network | needs the target for everything | 231 offline tools: evidence in, verdict out, zero network |
 | Repeatability | varies per run | deterministic output + one strict `findings.json` contract (Python and Rust, cross-tested) |
 | Active / exploit checks | a flag away | lab-gated: tier0 never runs them; exploit-lab needs `LAB=1`, loopback or a written ack |
 | AI agents | bolt-on | built for them: MCP server, `SKILL.md`, `AGENTS.md`, injection guard |
@@ -192,7 +192,7 @@ people learning it. Typical uses:
   [`docs/AWARENESS-PATTERNS.md`](docs/AWARENESS-PATTERNS.md) (nine
   real-world vulnerability patterns traced end-to-end from official code
   fixes) make it a hands-on classroom.
-- **Blue teams & DFIR** — 227 offline tools turn the artefacts you
+- **Blue teams & DFIR** — 231 offline tools turn the artefacts you
   already have (event logs, Sysmon, CloudTrail, IAM exports, k8s
   manifests, `/proc` snapshots, mail, binaries) into deterministic
   findings without sending a packet.
@@ -217,6 +217,7 @@ weaponised code.
 | [ESCALATION-WINDOWS](docs/ESCALATION-WINDOWS.md) | token privileges, unquoted/weak services, AlwaysInstallElevated, stored credentials, UAC, patch level |
 | [ESCALATION-CLOUD](docs/ESCALATION-CLOUD.md) | IAM policy confusion, role-trust chains, SSRF → metadata, Kubernetes RBAC, abuse evidence |
 | [AUTH-ATTACK-CHAINS](docs/AUTH-ATTACK-CHAINS.md) | JWT classes, OAuth/OIDC misuse, session flaws, SAML wrapping, lockout economics |
+| [ZERODAY-DEFENSE](docs/ZERODAY-DEFENSE.md) | find unknown bugs before attackers: taint analysis, lab fuzzing, crash triage, exploitation-behaviour hunting |
 | [HUNT-ACTIVE-CLASSES](docs/HUNT-ACTIVE-CLASSES.md) | file upload, race conditions, MFA/ATO, business logic — agent playbook |
 | [EXPLOIT-TIER](docs/EXPLOIT-TIER.md) | the proof tier's gates, aggression ladder and NEVER-LIST |
 
@@ -243,7 +244,7 @@ manual that teaches an agent to drive secai safely) and [AGENTS.md](AGENTS.md)
   declared safety class (from `read-only` up to `state-changing`) and a
   hard request budget. The registry is an *allowlist*: if a skill isn't
   listed, it doesn't run.
-- **227 offline triage tools** in `tools/` — evidence in (logs, exports,
+- **231 offline triage tools** in `tools/` — evidence in (logs, exports,
   manifests, binaries), deterministic `findings.json` out, zero network.
   121 of them were ported from 995 public skill concepts, each rebuilt
   from scratch.
@@ -267,7 +268,7 @@ manual that teaches an agent to drive secai safely) and [AGENTS.md](AGENTS.md)
   mass exfiltration) are refused no matter what flags you pass. Details in
   [docs/EXPLOIT-TIER.md](docs/EXPLOIT-TIER.md).
 
-*(340 scripts in total: 113 registered skills in `skills/` + 227 tools in
+*(344 scripts in total: 113 registered skills in `skills/` + 231 tools in
 `tools/`. A few extra `.py` files are shared helper modules, not entry
 points; a skill that runs in two modes has two registry entries.)*
 
@@ -280,7 +281,7 @@ by domain:
 (every implementation here is written from scratch, stdlib-only).
 
 <details>
-<summary><b>Highlights from the 227 tools in <code>tools/</code> — click to expand</b></summary>
+<summary><b>Highlights from the 231 tools in <code>tools/</code> — click to expand</b></summary>
 <br>
 
 | Domain | Answers the question… | Examples |

@@ -1,0 +1,4 @@
+2026-11-18 INFO release 2.4: fixed heap-buffer-overflow in parser (CVE-2026-0000)
+2026-11-18 WARN retrying after TimeoutError, handled
+2026-11-18 ERROR upstream returned 502; request will be retried
+Exception handling guide: see docs/errors.md

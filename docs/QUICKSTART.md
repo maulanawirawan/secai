@@ -82,7 +82,7 @@ evidence-only skill this way and fails if any of them claims anything.
 
 ## 3. Offline triage — evidence in, verdict out, zero network
 
-Most of secai's 227 tools never touch a network: you hand them an
+Most of secai's 231 tools never touch a network: you hand them an
 artefact, they return deterministic findings. Here: is this container
 one step away from the host?
 
@@ -138,6 +138,27 @@ jwt-lab: 1 row(s), proven=[] (6 request) -> jwt-strict.json
 A non-loopback target additionally needs `LAB_REMOTE_ACK=<written
 reason>`, which is recorded in the output. Rules and the full list of
 what the tier refuses: [EXPLOIT-TIER.md](EXPLOIT-TIER.md).
+
+## 5. Find unknown bugs in source code
+
+Zero-days start as ordinary bugs in code. The taint engine follows
+request data through functions and files to dangerous calls, without
+running the code. Point it at the deliberately vulnerable sample, then at
+its safe twin:
+
+<!-- example:zeroday-taint -->
+```bash
+python tools/taint_engine.py --repo tests/fixtures/zeroday/taint_vuln --out taint.json   # -> exit 1 | expect: 23 flow(s)
+python tools/taint_engine.py --repo tests/fixtures/zeroday/taint_safe --out safe.json   # expect: 0 flow(s)
+```
+<!-- /example -->
+
+Each flow carries its full path, for example
+`app.py:21 request.args → find_user(arg 0) → db.py:7 cur.execute()`.
+The safe twin uses parameterised queries, `int()`, `shlex.quote`,
+`yaml.safe_load` and friends, and reports nothing. The whole workflow
+(fuzzing your lab service, crash triage, catching exploitation in
+telemetry) is in [ZERODAY-DEFENSE.md](ZERODAY-DEFENSE.md).
 
 ---
 

@@ -101,7 +101,8 @@ class QuickstartDocsTest(unittest.TestCase):
         blocks = parse_blocks((ROOT / "docs" / "QUICKSTART.md")
                               .read_text(encoding="utf-8"))
         self.assertEqual(sorted(blocks), ["exploit-lab", "no-evidence",
-                                          "offline-triage", "quickstart"])
+                                          "offline-triage", "quickstart",
+                                          "zeroday-taint"])
         for name, cmds in blocks.items():
             with self.subTest(example=name):
                 self.assertTrue(cmds)

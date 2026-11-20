@@ -22,13 +22,13 @@ that cannot be proven never ships.
   also need `LAB_REMOTE_ACK=<written reason>`; refusal = exit 2).
 - `core-rs/` — native Rust core (`secai validate | scan ...`).
   Build: `cargo build --release --manifest-path core-rs/Cargo.toml`
-- `tools/` — helpers (227 offline triage tools, incl. quishing/doc-bait wave-2: `qr_vcard_triage`, `doc_beacon_triage`, `capture_triage`, `evtx_hunt`; wave-3: `html_smuggling_triage`, `unquoted_service_path_triage`, `vm_artifact_triage`; wave-4: `defender_tamper_triage`, `gpp_cpassword_triage`, `rdp_enable_triage`; wave-5: `lnk_triage`, `hidden_account_triage`, `llmnr_pcap_scan`; wave-6: `script_assoc_audit`, `link_spoof_triage`, `scom_artifact_triage`; wave-7: `whoami_priv_triage`, `systeminfo_triage`, `usb_device_triage`, `translate_proxy_triage`, `cme_log_triage`, `pingcastle_report_triage`, `sigma_rule_triage`, `nessus_report_triage`; wave-8: `dom_sink_scan`; wave-9: `retest_ledger`, `coverage_ledger`, `snaffler_log_triage`, `seatbelt_output_triage`; wave-10: `patch_guard_triage`; wave-12: `container_escape_check`): lab target (`tools/lab_target.py`), planner,
+- `tools/` — helpers (231 offline triage tools, incl. quishing/doc-bait wave-2: `qr_vcard_triage`, `doc_beacon_triage`, `capture_triage`, `evtx_hunt`; wave-3: `html_smuggling_triage`, `unquoted_service_path_triage`, `vm_artifact_triage`; wave-4: `defender_tamper_triage`, `gpp_cpassword_triage`, `rdp_enable_triage`; wave-5: `lnk_triage`, `hidden_account_triage`, `llmnr_pcap_scan`; wave-6: `script_assoc_audit`, `link_spoof_triage`, `scom_artifact_triage`; wave-7: `whoami_priv_triage`, `systeminfo_triage`, `usb_device_triage`, `translate_proxy_triage`, `cme_log_triage`, `pingcastle_report_triage`, `sigma_rule_triage`, `nessus_report_triage`; wave-8: `dom_sink_scan`; wave-9: `retest_ledger`, `coverage_ledger`, `snaffler_log_triage`, `seatbelt_output_triage`; wave-10: `patch_guard_triage`; wave-12: `container_escape_check`; wave-13 zero-day defense: `taint_engine`, `api_fuzz_lab` (LAB=1, loopback-only), `crash_triage`, `exploit_behavior_hunt`): lab target (`tools/lab_target.py`), planner,
   benchmarks, self-update, MCP server (`tools/mcp_server.py`), scout,
   session ledger, contribution pipeline (`cve_sweep`, `antidup_check`),
   agent-safety (`injection_guard`, `agent_shield`), audit engines
   (`audit_phases` multi-phase fail-closed, `insecure_defaults` config
   scanner), verify gate (`verify_gate` — claims need fresh evidence), leak-claim triage (`leak_triage`), parallel job dispatch (`fleet_dispatch`), skill vetting gate (`skill_vet`), CVSS v3.1 calculator (`cvss_score`), DFIR, config & intel triage (28+ tools triage: maldoc/pdf/mft/netflow/deauth/dpapi/packer/web-log/dns-log/eml/k8s/cloudtrail/IAM/sysmon/win-logon/waf/lolbin/CT-baseline/IOC-defang/SARIF-ingest/dsb. — lihat git log).
-- `tests/` — pytest suite (3806 tests + 205 subtests with the Rust release build present; without it 5 core-binary tests skip; POSIX-only tests skip automatically on Windows). Run: `python -m pytest tests/ -q`
+- `tests/` — pytest suite (3833 tests + 220 subtests with the Rust release build present; without it 5 core-binary tests skip; POSIX-only tests skip automatically on Windows). Run: `python -m pytest tests/ -q`
 - `docs/` — policies: exploit tier, egress, install, nightrun, legion
   method (`docs/LEGION-METHOD.md`), agent playbook utk kelas kerentanan
   aktif yang butuh penalaran LLM (`docs/HUNT-ACTIVE-CLASSES.md` —
@@ -36,7 +36,9 @@ that cannot be proven never ships.
   escalation playbooks (`docs/ESCALATION-LINUX.md`,
   `docs/ESCALATION-WINDOWS.md`, `docs/ESCALATION-CLOUD.md`) and
   auth chains (`docs/AUTH-ATTACK-CHAINS.md`) — patterns + detection
-  commands + lab gate per technique, no weaponised code. Runnable
+  commands + lab gate per technique, no weaponised code. Zero-day
+  defense workflow (find / triage / detect / respond, no exploits):
+  `docs/ZERODAY-DEFENSE.md`. Runnable
   examples: `docs/QUICKSTART.md` (executed by `tests/test_quickstart_docs.py`
   — keep every `<!-- example -->` block runnable). Contribution contracts:
   `CONTRIBUTING.md`.

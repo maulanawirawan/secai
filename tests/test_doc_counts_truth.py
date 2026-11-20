@@ -38,6 +38,8 @@ PATTERNS: list[tuple[str, str]] = [
     (r"badge/capabilities-(\d+)-", "scripts"),
     (r"\b(\d+) (?:registered )?detection skills", "skills"),
     (r"\b(\d+) offline triage tools", "tools"),
+    (r"\b(\d+) offline tools\b", "tools"),
+    (r"secai's (\d+) tools\b", "tools"),
     (r"\b(\d+) scripts\b", "scripts"),
     (r"\b(\d+) standalone", "skills"),
     (r"\b(\d+) registered skills\b", "skills"),
@@ -51,7 +53,7 @@ PATTERNS: list[tuple[str, str]] = [
     (r"tools/ 下共 (\d+) 个", "tools"),
 ]
 DOCS = ["README.md", "README.es.md", "README.zh.md", "AGENTS.md",
-        "SKILL.md"]
+        "SKILL.md", "docs/QUICKSTART.md"]
 
 
 class DocCountsTruthTest(unittest.TestCase):

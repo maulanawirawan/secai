@@ -7,6 +7,40 @@ as the compatibility signal.
 
 ## [Unreleased]
 
+### Added — wave-13 zero-day defense toolkit (4 tools + playbook, 227 -> 231 tools)
+
+Find unknown bugs before attackers do, triage what testing produces, and
+catch exploitation behaviour when it happens anyway. No exploit is built
+by any of them; outputs are leads with locations and fixes.
+
+- `tools/taint_engine.py` (read-only) — source-to-sink taint analysis.
+  Python: AST dataflow across functions and files (per-parameter
+  summaries to a fixed point), flow-sensitive kills, per-class sanitizers;
+  JS/TS and PHP: intra-file heuristics. Sinks: SQL, OS command,
+  eval/exec, file path, SSRF, SSTI, deserialization, unescaped markup,
+  redirect. Every row is an L1 lead with the full flow trace. Never
+  imports or executes the target (tested).
+- `tools/api_fuzz_lab.py` (LAB=1, loopback-only — LAB_REMOTE_ACK cannot
+  open it) — OpenAPI 3 / Swagger 2 driven differential fuzzer: new 5xx,
+  new error/stack-trace signature (SQL -> CWE-89 lead), template marker
+  evaluated, slow response, dropped connection; stable-baseline
+  requirement, re-send to reproduce (L2), GET-only by default, bounded,
+  stops when the service dies; JSONL crash corpus output.
+- `tools/crash_triage.py` (read-only) — buckets ASan/UBSan/MSan/LSan/TSan,
+  segfault, Python/Go/Java/Node reports (and the fuzz corpus) by bug
+  class + top project frames; memory corruption ranked first.
+- `tools/exploit_behavior_hunt.py` (read-only) — server/database process
+  spawning a shell, execution from writable paths by service accounts,
+  first-seen lineage/egress vs a baseline, server -> shell -> outbound
+  chain; Sysmon XML (DTD refused) or JSONL.
+- `core/lab_gate.py`: opt-in loopback-only mode (`allow_remote=False`);
+  existing callers unchanged.
+- `docs/ZERODAY-DEFENSE.md` workflow; QUICKSTART example 5 (executed by
+  the docs test); fixtures under `tests/fixtures/zeroday/` (vulnerable +
+  FP-control twin for every tool); `tests/test_zeroday_defense.py`.
+- Doc-truth test widened ("N offline tools", QUICKSTART) — it caught
+  three stale counts written in wave-12.
+
 ### Fixed — wave-12 follow-up: order-dependent test failure (no count change)
 
 - A reversed-file-order run failed `test_f37_ops::test_empty_selection_exit`:

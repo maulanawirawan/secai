@@ -11,9 +11,9 @@ salida estricto que ambos respetan.
 *Sin prueba, no hay informe.*
 
 [![CI](https://github.com/maulanawirawan/secai/actions/workflows/ci.yml/badge.svg)](https://github.com/maulanawirawan/secai/actions/workflows/ci.yml)
-[![tests](https://img.shields.io/badge/tools-227-brightgreen)](#qué-incluye)
+[![tests](https://img.shields.io/badge/tools-231-brightgreen)](#qué-incluye)
 [![release](https://img.shields.io/badge/release-v0.1.0-blue)](https://github.com/maulanawirawan/secai/releases)
-[![skills](https://img.shields.io/badge/capabilities-340-8A2BE2)](#qué-incluye)
+[![skills](https://img.shields.io/badge/capabilities-344-8A2BE2)](#qué-incluye)
 [![coverage](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/maulanawirawan/secai/gh-pages/coverage-badge.json)](https://github.com/maulanawirawan/secai/actions/workflows/ci.yml)
 [![python](https://img.shields.io/badge/python-3.10%2B-3776AB)](#inicio-rápido)
 [![rust](https://img.shields.io/badge/rust-stable-orange)](#inicio-rápido)
@@ -31,7 +31,7 @@ salida estricto que ambos respetan.
 |---|---|---|
 | Hallazgos sin probar | se reportan | quedan como pistas `L1`, `reportable: false` |
 | Evidencia ausente o rota | a menudo se reporta igual | **sin evidencia, no hay afirmación** — exit 2 (verificado por tests en cada skill de evidencia) |
-| Red | necesita el objetivo para todo | 227 herramientas offline: evidencia entra, veredicto sale, cero red |
+| Red | necesita el objetivo para todo | 231 herramientas offline: evidencia entra, veredicto sale, cero red |
 | Repetibilidad | varía entre ejecuciones | salida determinista + un contrato `findings.json` estricto (Python y Rust, probados entre sí) |
 | Pruebas activas / exploit | a un flag de distancia | con compuertas: tier0 nunca las ejecuta; exploit-lab exige `LAB=1`, loopback o un acuse escrito |
 | Agentes de IA | añadido | pensado para ellos: servidor MCP, `SKILL.md`, `AGENTS.md`, guardia anti-inyección |
@@ -178,12 +178,12 @@ flowchart LR
 
 ## Qué incluye
 
-- **340 scripts de capacidades** en dos familias: **113 skills de
+- **344 scripts de capacidades** en dos familias: **113 skills de
   detección registradas** en `skills/` (recon, postura y exposición —
   cada una es una CLI independiente con clase de seguridad declarada,
   de `read-only` a `state-changing`, y un límite estricto de
   peticiones derivado de ella; el registro es una lista blanca: lo que
-  no está listado no se ejecuta) y **227 herramientas offline** en
+  no está listado no se ejecuta) y **231 herramientas offline** en
   `tools/` (triage de evidencia — 121 portadas de 995 conceptos).
 - **Un núcleo nativo en Rust** en `core-rs/`: `secai validate` revisa
   el contrato, `secai scan` ejecuta escaneos por niveles y genera el
