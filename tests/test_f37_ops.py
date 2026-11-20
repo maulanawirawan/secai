@@ -9,10 +9,12 @@ dummy. Yang dikunci:
 """
 from __future__ import annotations
 
+import io
 import json
 import sys
 import tempfile
 import unittest
+from contextlib import redirect_stderr, redirect_stdout
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -84,9 +86,11 @@ class ReportPackProgramsTest(unittest.TestCase):
             cfg.write_text(json.dumps({"programs": [
                 {"id": "b", "domain": "b.example", "accepted": False}]}),
                 encoding="utf-8")
-            with self.assertRaises(SystemExit):
-                # argv tanpa program lolos -> exit 2 (fail-closed)
-                report_pack.main()
+            # KI-2 (resolved): drive the real path with explicit argv —
+            # main() returns 2 (fail-closed); no SystemExit involved.
+            with redirect_stdout(io.StringIO()), redirect_stderr(io.StringIO()):
+                self.assertEqual(
+                    report_pack.main(["--programs", str(cfg), "--out", td]), 2)
 
 
 if __name__ == "__main__":

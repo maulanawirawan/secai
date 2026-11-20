@@ -7,7 +7,7 @@
 *A security scanner that refuses to report anything it can't prove.*
 
 [![CI](https://github.com/maulanawirawan/secai/actions/workflows/ci.yml/badge.svg)](https://github.com/maulanawirawan/secai/actions/workflows/ci.yml)
-[![release](https://img.shields.io/badge/release-v0.1.0-blue)](https://github.com/maulanawirawan/secai/releases)
+[![release](https://img.shields.io/badge/release-v0.2.0-blue)](https://github.com/maulanawirawan/secai/releases)
 [![skills](https://img.shields.io/badge/skills-113-8A2BE2)](#whats-inside)
 [![tools](https://img.shields.io/badge/tools-231-brightgreen)](#whats-inside)
 [![coverage](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/maulanawirawan/secai/gh-pages/coverage-badge.json)](https://github.com/maulanawirawan/secai/actions/workflows/ci.yml)

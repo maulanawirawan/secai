@@ -7,6 +7,20 @@ as the compatibility signal.
 
 ## [Unreleased]
 
+### Fixed — owner follow-ups (2026-11-21)
+
+- Release badge in all three READMEs bumped to v0.2.0 (tag was pushed
+  2026-11-20; the GitHub Release page is published with this commit).
+- KI-2 closed: `test_empty_selection_exit` drives `report_pack.main()`
+  through the real path (explicit argv, asserts return 2) instead of
+  relying on argparse rejecting pytest's argv.
+- Removed orphan `skills/attack_common.py`: scaffolding for a 25-skill
+  attack pack that was never built; it imported nonexistent
+  `lib.findings` / `attack.blackbox_recon`, whose equivalents already
+  live in `core/findings.py`, `skills/ua.py`, and `core/lab_gate.py`
+  (rebuilding them would duplicate tested modules). Its only reference
+  — the test_ua.py exclusion — was removed with it.
+
 ### Added — wave-13 zero-day defense toolkit (4 tools + playbook, 227 -> 231 tools)
 
 Find unknown bugs before attackers do, triage what testing produces, and

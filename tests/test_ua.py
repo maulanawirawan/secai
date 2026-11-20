@@ -50,8 +50,8 @@ class UaTest(unittest.TestCase):
         import re
         hard = []
         for p in (ROOT / "skills").glob("*.py"):
-            if p.name in ("ua.py", "attack_common.py"):
-                continue  # sumber definisi + helper lab
+            if p.name == "ua.py":
+                continue  # sumber definisi
             src = p.read_text(encoding="utf-8-sig")
             for m in re.finditer(
                     r'(?:UA|UA_ENV)\s*=\s*["\'](?!["\'])([^"\']{4,})["\']',

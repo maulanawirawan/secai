@@ -23,7 +23,7 @@ yet fixed. Each entry: what was observed, the exact commands, status.
   the input is valid. Locked by `tests/test_suite_isolation.py` (its argv
   check fails when run with `--noconftest`, i.e. the guard is real).
 
-## KI-2 — `test_empty_selection_exit` depends on how pytest was started — OPEN (owner decision)
+## KI-2 — `test_empty_selection_exit` depends on how pytest was started — RESOLVED 2026-11-21
 
 - **Proof:** the test writes a `programs.json` but never passes it to
   `report_pack.main()`; it can only pass because argparse *rejects* the
@@ -34,9 +34,11 @@ yet fixed. Each entry: what was observed, the exact commands, status.
   `python -c "import sys,pytest; sys.exit(pytest.main(['tests/test_f37_ops.py']))"`
   → fails, both before the KI-1 fix (`FileNotFoundError`) and after it
   (`SystemExit not raised`). CI and the documented command pass.
-- **Not changed** because existing tests are contract. Suggested fix for
-  the owner: call `report_pack.main(["--programs", str(cfg), "--out",
-  td])` and assert the return value is `2`.
+- **Resolved 2026-11-21 (owner approved):** the test now drives the real
+  path — `report_pack.main(["--programs", str(cfg), "--out", td])` with
+  `assertEqual(..., 2)`, same pattern as
+  `tests/test_suite_isolation.py::ReportPackFailClosedTest`; the
+  SystemExit reliance is gone.
 
 ## KI-3 — one unidentified failure in a normal-order run — UNREPRODUCED as of 2026-11-20, watched
 
